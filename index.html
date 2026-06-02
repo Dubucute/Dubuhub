@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raw Paste Host</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+      padding: 20px;
+    }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: #58a6ff;
+    }
+    .subtitle {
+      color: #8b949e;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+    .subtitle code {
+      background: #21262d;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: #c9d1d9;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    textarea:focus {
+      border-color: #58a6ff;
+    }
+    .btn {
+      background: #238636;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+      margin-top: 16px;
+    }
+    .btn:hover { background: #2ea043; }
+    .btn:disabled {
+      background: #30363d;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 16px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      display: none;
+    }
+    .result.show { display: block; }
+    .result label {
+      display: block;
+      font-size: 0.85rem;
+      color: #8b949e;
+      margin-bottom: 6px;
+    }
+    .result .url {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #161b22;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      word-break: break-all;
+    }
+    .result .url code {
+      color: #58a6ff;
+      font-size: 14px;
+      flex: 1;
+    }
+    .result .url .copy-btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .result .url .copy-btn:hover { background: #30363d; }
+    .lua-preview {
+      margin-top: 12px;
+      padding: 12px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+    }
+    .lua-preview code {
+      color: #7ee787;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      word-break: break-all;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #238636;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      z-index: 100;
+    }
+    .toast.show { display: block; }
+    .toast.error { background: #da3633; }
+    .footer {
+      margin-top: 16px;
+      text-align: center;
+      color: #484f58;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Raw Paste Host</h1>
+      <p class="subtitle">Paste text &mdash; get a raw URL for <code>loadstring</code> / <code>HttpGet</code></p>
+
+      <textarea id="pasteContent" placeholder="Paste your Lua script or text here..."></textarea>
+      <button class="btn" id="submitBtn" onclick="createPaste()">Create Paste</button>
+
+      <div class="result" id="result">
+        <label>Raw URL (for loadstring)</label>
+        <div class="url">
+          <code id="rawUrl"></code>
+          <button class="copy-btn" onclick="copyRawUrl()">Copy</button>
+        </div>
+
+        <label>Lua Loadstring</label>
+        <div class="lua-preview">
+          <code id="luaCode"></code>
+        </div>
+        <div class="url" style="margin-top: 8px;">
+          <code id="luaCodeSmall"></code>
+          <button class="copy-btn" onclick="copyLuaCode()">Copy</button>
+        </div>
+
+        <label>Paste ID</label>
+        <div class="url" style="margin-bottom: 0;">
+          <code id="pasteId"></code>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      Deployed on Vercel &middot; CORS enabled &middot; Raw text hosting
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    async function createPaste() {
+      const content = document.getElementById('pasteContent').value.trim();
+      const btn = document.getElementById('submitBtn');
+
+      if (!content) {
+        showToast('Please enter some content', true);
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      try {
+        const res = await fetch('/api/paste', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: content })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to create paste');
+        }
+
+        const rawUrl = data.rawUrl;
+        document.getElementById('rawUrl').textContent = rawUrl;
+        document.getElementById('luaCode').textContent = 'loadstring(game:HttpGet("' + rawUrl + '"))()';
+        document.getElementById('luaCodeSmall').textContent = 'loadstring(game:HttpGet("' + rawUrl + '"))()';
+        document.getElementById('pasteId').textContent = data.id;
+        document.getElementById('result').classList.add('show');
+        showToast('Paste created successfully!');
+      } catch (err) {
+        showToast('Error: ' + err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Paste';
+      }
+    }
+
+    async function copyRawUrl() {
+      const text = document.getElementById('rawUrl').textContent;
+      await copyText(text, 'Raw URL copied!');
+    }
+
+    async function copyLuaCode() {
+      const text = document.getElementById('luaCodeSmall').textContent;
+      await copyText(text, 'Loadstring copied!');
+    }
+
+    async function copyText(text, successMsg) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(successMsg);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast(successMsg);
+      }
+    }
+
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show';
+      if (isError) t.classList.add('error');
+      setTimeout(function() {
+        t.classList.remove('show');
+        t.classList.remove('error');
+      }, 2500);
+    }
+
+    document.getElementById('pasteContent').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        createPaste();
+      }
+    });
+  </script>
+</body>
+</html>
