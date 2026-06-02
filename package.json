@@ -1,7 +1,10 @@
 {
-  "name": "raw-paste-hosting",
+  "name": "dubuhub",
   "version": "1.0.0",
   "scripts": {
     "vercel-build": "echo build complete"
+  },
+  "dependencies": {
+    "@vercel/kv": "^2.0.0"
   }
 }
