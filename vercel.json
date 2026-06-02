@@ -1,0 +1,13 @@
+{
+  "headers": [
+    {
+      "source": "/(.*).lua",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    }
+  ]
+ CLI deployment** or **GitHub deployment**? If you use GitHub, any changes you make to your Lua text file in the future will automatically update on your domain.
