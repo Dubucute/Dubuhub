@@ -1,1 +1,11 @@
-loadstring(game:HttpGet("https://api.jnkie.com/api/v1/luascripts/public/a9ab3f57274bb8f7e41ebbb71507f1e91cdcc0e5138eccc7b6405ed25decdb50/download"))()
+-- Dubuhub - Raw text hosting for loadstring
+-- Usage: loadstring(game:HttpGet("https://dubuhub.vercel.app/YOUR_PASTE_ID"))()
+--
+-- Create a paste:
+--   POST https://dubuhub.vercel.app/api/paste
+--   JSON: { "content": "your lua script here" }
+--
+-- Response: { "id": "abc123", "rawUrl": "https://dubuhub.vercel.app/abc123", ... }
+--
+-- Then use:
+-- loadstring(game:HttpGet("https://dubuhub.vercel.app/abc123"))()
