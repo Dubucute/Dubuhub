@@ -42,7 +42,9 @@ export default async function handler(req, res) {
     const id = generateId();
     store.set(id, content);
 
-    const host = process.env.VERCEL_URL || req.headers.host || 'localhost:3000';
+    // Use dubuhub.vercel.app as the primary domain
+    // Falls back to VERCEL_URL for preview deployments
+    const host = process.env.DUBUHUB_DOMAIN || 'dubuhub.vercel.app';
     const baseUrl = `https://${host}`;
 
     return res.status(201).json({

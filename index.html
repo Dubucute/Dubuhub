@@ -218,10 +218,11 @@
           throw new Error(data.error || 'Failed to create paste');
         }
 
-        const rawUrl = data.rawUrl;
-        document.getElementById('rawUrl').textContent = rawUrl;
-        document.getElementById('luaCode').textContent = 'loadstring(game:HttpGet("' + rawUrl + '"))()';
-        document.getElementById('luaCodeSmall').textContent = 'loadstring(game:HttpGet("' + rawUrl + '"))()';
+        // Force the dubuhub.vercel.app domain
+        const cleanUrl = 'https://dubuhub.vercel.app/' + data.id;
+        document.getElementById('rawUrl').textContent = cleanUrl;
+        document.getElementById('luaCode').textContent = 'loadstring(game:HttpGet("' + cleanUrl + '"))()';
+        document.getElementById('luaCodeSmall').textContent = 'loadstring(game:HttpGet("' + cleanUrl + '"))()';
         document.getElementById('pasteId').textContent = data.id;
         document.getElementById('result').classList.add('show');
         showToast('Paste created successfully!');
