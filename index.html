@@ -1,568 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dubu Hub — Roblox Script Hub</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: #0a0a0a;
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .bg-glow {
-      position: fixed;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(ellipse at 30% 20%, rgba(255, 20, 147, 0.08) 0%, transparent 50%),
-                  radial-gradient(ellipse at 70% 80%, rgba(255, 105, 180, 0.06) 0%, transparent 50%);
-      z-index: 0;
-      pointer-events: none;
-      animation: pulseGlow 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulseGlow {
-      0% { transform: scale(1) rotate(0deg); opacity: 0.5; }
-      100% { transform: scale(1.2) rotate(5deg); opacity: 1; }
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(255, 20, 147, 0.15);
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, #ff1493, #ff69b4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
-    }
-
-    .logo span {
-      font-weight: 400;
-      -webkit-text-fill-color: #666;
-      font-size: 1rem;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .nav-links a {
-      color: #888;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: all 0.3s;
-      border: 1px solid transparent;
-    }
-
-    .nav-links a:hover {
-      color: #ff69b4;
-      border-color: rgba(255, 105, 180, 0.3);
-      background: rgba(255, 105, 180, 0.05);
-    }
-
-    .nav-links a.get-key {
-      background: linear-gradient(135deg, #ff1493, #ff69b4);
-      color: #fff;
-      border: none;
-    }
-
-    .nav-links a.get-key:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(255, 20, 147, 0.4);
-    }
-
-    .hero {
-      text-align: center;
-      padding: 60px 0 40px;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      background: rgba(255, 20, 147, 0.1);
-      border: 1px solid rgba(255, 20, 147, 0.3);
-      color: #ff69b4;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 900;
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-
-    .hero h1 .gradient {
-      background: linear-gradient(135deg, #ff1493, #ff69b4, #ff1493);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: shimmer 4s ease-in-out infinite;
-    }
-
-    @keyframes shimmer {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    .hero p {
-      color: #888;
-      font-size: 1.15rem;
-      max-width: 600px;
-      margin: 0 auto 28px;
-      line-height: 1.6;
-    }
-
-    .loadstring-card {
-      background: linear-gradient(135deg, rgba(255, 20, 147, 0.08), rgba(255, 105, 180, 0.04));
-      border: 1px solid rgba(255, 20, 147, 0.2);
-      border-radius: 16px;
-      padding: 24px;
-      max-width: 700px;
-      margin: 0 auto 40px;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .loadstring-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255, 20, 147, 0.05) 0%, transparent 60%);
-      animation: rotateGlow 10s linear infinite;
-    }
-
-    @keyframes rotateGlow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .loadstring-card .label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #ff69b4;
-      margin-bottom: 10px;
-      font-weight: 700;
-      position: relative;
-      z-index: 1;
-    }
-
-    .loadstring-card .code-block {
-      display: flex;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 14px 18px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .loadstring-card .code-block code {
-      flex: 1;
-      color: #ff69b4;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      word-break: break-all;
-      white-space: pre-wrap;
-    }
-
-    .loadstring-card .code-block .copy-btn {
-      background: rgba(255, 20, 147, 0.15);
-      border: 1px solid rgba(255, 20, 147, 0.3);
-      color: #ff69b4;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 600;
-      transition: all 0.3s;
-      white-space: nowrap;
-      margin-left: 12px;
-      flex-shrink: 0;
-    }
-
-    .loadstring-card .code-block .copy-btn:hover {
-      background: rgba(255, 20, 147, 0.3);
-      box-shadow: 0 0 20px rgba(255, 20, 147, 0.2);
-    }
-
-    .stats-row {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-bottom: 50px;
-      flex-wrap: wrap;
-    }
-
-    .stat-item { text-align: center; }
-
-    .stat-item .num {
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: #ff69b4;
-    }
-
-    .stat-item .label {
-      font-size: 0.8rem;
-      color: #555;
-      margin-top: 2px;
-    }
-
-    .games-section { margin-bottom: 40px; }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .section-header h2 { font-size: 1.5rem; font-weight: 800; }
-
-    .section-header .popular-badge {
-      background: rgba(255, 20, 147, 0.12);
-      border: 1px solid rgba(255, 20, 147, 0.25);
-      color: #ff69b4;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 12px;
-    }
-
-    .game-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 18px;
-      transition: all 0.3s;
-      cursor: default;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .game-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 3px;
-      height: 100%;
-      background: linear-gradient(180deg, #ff1493, #ff69b4);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .game-card:hover {
-      border-color: rgba(255, 105, 180, 0.3);
-      transform: translateX(4px);
-      background: rgba(255, 20, 147, 0.05);
-    }
-
-    .game-card:hover::before { opacity: 1; }
-
-    .game-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
-    .game-card .name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
-    .game-card .desc { font-size: 0.8rem; color: #666; }
-
-    .game-card .popular-tag {
-      display: inline-block;
-      background: linear-gradient(135deg, #ff1493, #ff69b4);
-      color: #fff;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 10px;
-      margin-top: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 40px;
-    }
-
-    .feature-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .feature-card .emoji { font-size: 2rem; margin-bottom: 10px; }
-    .feature-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
-    .feature-card p { font-size: 0.8rem; color: #666; }
-
-    .cta-bar {
-      text-align: center;
-      padding: 30px 0;
-      border-top: 1px solid rgba(255, 20, 147, 0.1);
-    }
-
-    .cta-bar .btn-large {
-      display: inline-block;
-      background: linear-gradient(135deg, #ff1493, #ff69b4);
-      color: #fff;
-      text-decoration: none;
-      padding: 16px 40px;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      transition: all 0.3s;
-      border: none;
-      cursor: pointer;
-    }
-
-    .cta-bar .btn-large:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(255, 20, 147, 0.4);
-    }
-
-    .cta-bar .sub {
-      color: #555;
-      font-size: 0.85rem;
-      margin-top: 10px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      color: #444;
-      font-size: 0.85rem;
-    }
-
-    footer a { color: #ff69b4; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1a1a1a;
-      border: 1px solid rgba(255, 20, 147, 0.3);
-      color: #ff69b4;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      display: none;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-
-    .toast.show { display: block; }
-
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 2.2rem; }
-      .hero p { font-size: 1rem; }
-      .loadstring-card .code-block { flex-direction: column; gap: 10px; }
-      .loadstring-card .code-block .copy-btn { margin-left: 0; width: 100%; text-align: center; }
-      .stats-row { gap: 24px; }
-      .games-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dubu Hub - Roblox Script Hub</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;overflow-x:hidden}
+.bg-glow{position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(255,20,147,0.08) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(255,105,180,0.06) 0%,transparent 50%);z-index:0;pointer-events:none;animation:pulseGlow 8s ease-in-out infinite alternate}
+@keyframes pulseGlow{0%{transform:scale(1) rotate(0deg);opacity:.5}100%{transform:scale(1.2) rotate(5deg);opacity:1}}
+.container{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:20px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(255,20,147,0.15);flex-wrap:wrap;gap:16px}
+.logo{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#ff1493,#ff69b4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px}
+.logo span{font-weight:400;-webkit-text-fill-color:#666;font-size:1rem}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.nav-links a{color:#888;text-decoration:none;padding:8px 16px;border-radius:8px;font-size:.9rem;font-weight:600;transition:all .3s;border:1px solid transparent}
+.nav-links a:hover{color:#ff69b4;border-color:rgba(255,105,180,0.3);background:rgba(255,105,180,0.05)}
+.nav-links a.get-key{background:linear-gradient(135deg,#ff1493,#ff69b4);color:#fff;border:none}
+.nav-links a.get-key:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,20,147,0.4)}
+.hero{text-align:center;padding:60px 0 40px}
+.hero-badge{display:inline-block;background:rgba(255,20,147,0.1);border:1px solid rgba(255,20,147,0.3);color:#ff69b4;padding:6px 16px;border-radius:20px;font-size:.8rem;font-weight:600;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px}
+.hero h1{font-size:3.5rem;font-weight:900;line-height:1.1;margin-bottom:16px}
+.hero h1 .gradient{background:linear-gradient(135deg,#ff1493,#ff69b4,#ff1493);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s ease-in-out infinite}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero p{color:#888;font-size:1.15rem;max-width:600px;margin:0 auto 28px;line-height:1.6}
+.loadstring-card{background:linear-gradient(135deg,rgba(255,20,147,0.08),rgba(255,105,180,0.04));border:1px solid rgba(255,20,147,0.2);border-radius:16px;padding:24px;max-width:700px;margin:0 auto 40px;backdrop-filter:blur(10px);position:relative;overflow:hidden}
+.loadstring-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,20,147,0.05) 0%,transparent 60%);animation:rotateGlow 10s linear infinite}
+@keyframes rotateGlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.loadstring-card .label{font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:#ff69b4;margin-bottom:10px;font-weight:700;position:relative;z-index:1}
+.loadstring-card .code-block{display:flex;align-items:center;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 18px;position:relative;z-index:1}
+.loadstring-card .code-block code{flex:1;color:#ff69b4;font-family:'Courier New',monospace;font-size:.9rem;word-break:break-all;white-space:pre-wrap}
+.loadstring-card .code-block .copy-btn{background:rgba(255,20,147,0.15);border:1px solid rgba(255,20,147,0.3);color:#ff69b4;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .3s;white-space:nowrap;margin-left:12px;flex-shrink:0}
+.loadstring-card .code-block .copy-btn:hover{background:rgba(255,20,147,0.3);box-shadow:0 0 20px rgba(255,20,147,0.2)}
+.stats-row{display:flex;justify-content:center;gap:40px;margin-bottom:50px;flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-item .num{font-size:1.8rem;font-weight:900;color:#ff69b4}
+.stat-item .label{font-size:.8rem;color:#555;margin-top:2px}
+.games-section{margin-bottom:40px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.section-header h2{font-size:1.5rem;font-weight:800}
+.section-header .popular-badge{background:rgba(255,20,147,0.12);border:1px solid rgba(255,20,147,0.25);color:#ff69b4;padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600}
+.top-three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.top-card{background:rgba(255,20,147,0.06);border:1px solid rgba(255,20,147,0.25);border-radius:16px;padding:24px;text-align:center;transition:all .3s;position:relative;overflow:hidden}
+.top-card:hover{transform:translateY(-4px);border-color:#ff69b4;box-shadow:0 8px 30px rgba(255,20,147,0.2)}
+.top-card .rank{position:absolute;top:10px;left:14px;font-size:.7rem;font-weight:900;color:#ff69b4;text-transform:uppercase;letter-spacing:1px}
+.top-card .icon{font-size:2.5rem;margin-bottom:10px;color:#ff69b4}
+.top-card .name{font-weight:800;font-size:1.1rem;margin-bottom:6px;color:#fff}
+.top-card .desc{font-size:.8rem;color:#888;margin-bottom:10px}
+.top-card .play-btn{display:inline-block;background:linear-gradient(135deg,#ff1493,#ff69b4);color:#fff;padding:8px 24px;border-radius:8px;font-size:.8rem;font-weight:700;text-decoration:none;transition:all .3s;border:none;cursor:pointer}
+.top-card .play-btn:hover{transform:scale(1.05);box-shadow:0 4px 20px rgba(255,20,147,0.4)}
+@media(max-width:768px){.top-three{grid-template-columns:1fr}}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.game-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px;transition:all .3s;cursor:default;position:relative;overflow:hidden}
+.game-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#ff1493,#ff69b4);opacity:0;transition:opacity .3s}
+.game-card:hover{border-color:rgba(255,105,180,0.3);transform:translateX(4px);background:rgba(255,20,147,0.05)}
+.game-card:hover::before{opacity:1}
+.game-card .icon{font-size:1.5rem;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.game-card .name{font-weight:700;font-size:1rem;margin-bottom:4px}
+.game-card .desc{font-size:.8rem;color:#666}
+.game-card a{color:inherit;text-decoration:none;display:block}
+.game-card a:hover{color:inherit}
+.game-card .status-tag{display:inline-block;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:8px;text-transform:uppercase;letter-spacing:.5px}
+.status-working{background:#1a3a1a;color:#4ade80;border:1px solid rgba(74,222,128,0.3)}
+.status-outdated{background:#3a2a1a;color:#fbbf24;border:1px solid rgba(251,191,36,0.3)}
+.status-discontinued{background:#3a1a1a;color:#f87171;border:1px solid rgba(248,113,113,0.3)}
+.features{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:40px}
+.feature-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:20px;text-align:center}
+.feature-card .emoji{font-size:2rem;margin-bottom:10px;color:#ff69b4}
+.feature-card h4{font-size:.95rem;font-weight:700;margin-bottom:4px}
+.feature-card p{font-size:.8rem;color:#666}
+.cta-bar{text-align:center;padding:30px 0;border-top:1px solid rgba(255,20,147,0.1)}
+.cta-bar .btn-large{display:inline-block;background:linear-gradient(135deg,#ff1493,#ff69b4);color:#fff;text-decoration:none;padding:16px 40px;border-radius:12px;font-size:1.1rem;font-weight:800;transition:all .3s;border:none;cursor:pointer}
+.cta-bar .btn-large:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,20,147,0.4)}
+.cta-bar .sub{color:#555;font-size:.85rem;margin-top:10px}
+footer{text-align:center;padding:20px 0;border-top:1px solid rgba(255,255,255,0.05);color:#444;font-size:.85rem}
+footer a{color:#ff69b4;text-decoration:none}
+footer a:hover{text-decoration:underline}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid rgba(255,20,147,0.3);color:#ff69b4;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;display:none;z-index:100;backdrop-filter:blur(10px)}
+.toast.show{display:block}
+@media(max-width:768px){.hero h1{font-size:2.2rem}.hero p{font-size:1rem}.loadstring-card .code-block{flex-direction:column;gap:10px}.loadstring-card .code-block .copy-btn{margin-left:0;width:100%;text-align:center}.stats-row{gap:24px}.games-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <div class="bg-glow"></div>
+<div class="bg-glow"></div>
+<div class="container">
+<nav>
+<div class="logo">Dubu Hub <span>// roblox</span></div>
+<div class="nav-links">
+<a href="/">Home</a>
+<a href="#games">Games</a>
+<a href="https://jnkie.com/get-key/dubuhub" class="get-key">Get Your Key</a>
+</div>
+</nav>
 
-  <div class="container">
-    <nav>
-      <div class="logo">Dubu Hub <span>// roblox</span></div>
-      <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="#games">Games</a>
-        <a href="https://jnkie.com/get-key/dubuhub" class="get-key">🔑 Get Your Key</a>
-      </div>
-    </nav>
+<div class="hero">
+<div class="hero-badge">v1.0 - Roblox Script Hub</div>
+<h1>Your all-in-one<br><span class="gradient">script hub</span> for Roblox!</h1>
+<p>Enhance your gameplay with powerful, easy-to-use features. Load instantly with a single <code style="color:#ff69b4;">loadstring</code>.</p>
+</div>
 
-    <div class="hero">
-      <div class="hero-badge">🎮 v1.0 • Roblox Script Hub</div>
-      <h1>Your all-in-one<br><span class="gradient">script hub</span> for Roblox!</h1>
-      <p>Enhance your gameplay with powerful, easy‑to‑use features. Load instantly with a single <code style="color:#ff69b4;">loadstring</code>.</p>
-    </div>
+<div class="loadstring-card">
+<div class="label">Main Loadstring</div>
+<div class="code-block">
+<code>loadstring(game:HttpGet("https://dubuhub.vercel.app/loader.lua"))()</code>
+<button class="copy-btn" onclick="copyLoadstring()">Copy</button>
+</div>
+</div>
 
-    <div class="loadstring-card">
-      <div class="label">⚡ Main Loadstring</div>
-      <div class="code-block">
-        <code>loadstring(game:HttpGet("https://dubuhub.vercel.app/loader.lua"))()</code>
-        <button class="copy-btn" onclick="copyLoadstring()">📋 Copy</button>
-      </div>
-    </div>
+<div class="stats-row">
+<div class="stat-item"><div class="num">12</div><div class="label">Supported Games</div></div>
+<div class="stat-item"><div class="num">3</div><div class="label">Working Now</div></div>
+<div class="stat-item"><div class="num">oo</div><div class="label">Free to Use</div></div>
+</div>
 
-    <div class="stats-row">
-      <div class="stat-item"><div class="num">12</div><div class="label">Supported Games</div></div>
-      <div class="stat-item"><div class="num">3</div><div class="label">🔥 Popular Now</div></div>
-      <div class="stat-item"><div class="num">∞</div><div class="label">Free to Use</div></div>
-    </div>
+<div class="features">
+<div class="feature-card"><div class="emoji"><i class="fas fa-bolt"></i></div><h4>Instant Load</h4><p>One loadstring, zero hassle</p></div>
+<div class="feature-card"><div class="emoji"><i class="fas fa-shield-halved"></i></div><h4>Safe & Secure</h4><p>Regularly updated scripts</p></div>
+<div class="feature-card"><div class="emoji"><i class="fas fa-crosshairs"></i></div><h4>Game Specific</h4><p>Tailored for each game</p></div>
+<div class="feature-card"><div class="emoji"><i class="fas fa-heart"></i></div><h4>Free Forever</h4><p>No paywalls, no keys</p></div>
+</div>
 
-    <div class="features">
-      <div class="feature-card"><div class="emoji">⚡</div><h4>Instant Load</h4><p>One loadstring, zero hassle</p></div>
-      <div class="feature-card"><div class="emoji">🛡️</div><h4>Safe & Secure</h4><p>Regularly updated scripts</p></div>
-      <div class="feature-card"><div class="emoji">🎯</div><h4>Game Specific</h4><p>Tailored for each game</p></div>
-      <div class="feature-card"><div class="emoji">💎</div><h4>Free Forever</h4><p>No paywalls, no keys</p></div>
-    </div>
+<div class="games-section" id="games">
 
-    <div class="games-section" id="games">
-      <div class="section-header">
-        <h2>🎮 Supported Games</h2>
-        <span class="popular-badge">🔥 Most Popular: Street Life, BBQ It, Dive Down</span>
-      </div>
-      <div class="games-grid">
-        <div class="game-card">
-          <div class="icon">🤿</div>
-          <div class="name">Dive Down</div>
-          <div class="desc">Explore the depths, collect treasure</div>
-          <span class="popular-tag">🔥 Popular</span>
-        </div>
-        <div class="game-card">
-          <div class="icon">🧠</div>
-          <div class="name">Escape Guards to steal Brainrot</div>
-          <div class="desc">Sneak past guards, collect brainrot</div>
-        </div>
-        <div class="game-card">
-          <div class="icon">🎬</div>
-          <div class="name">Be a YouTuber</div>
-          <div class="desc">Grow your channel, become famous</div>
-        </div>
-        <div class="game-card">
-          <div class="icon">📈</div>
-          <div class="name">Grow a Crypto Farm</div>
-          <div class="desc">Mine crypto, build your empire</div>
-        </div>
-        <div class="game-card">
-          <div class="icon">🌋</div>
-          <div class="name">Survive Lava for Brainrots</div>
-          <div class="desc">Avoid the rising lava, collect brainrots</div>
-        </div>
-        <div class="game-card">
-          <div class="icon">🎣</div>
-          <div class="name">Reel a Brainrots</div>
-          <div class="desc">Fish for rare brainrots</div>
-        </div>
-        <div class="game-card">
-          <div class="icon">🏙️</div>
-          <div class="name">Street Life Remastered</div>
-          <div class="desc">Live the street life, rise to the top</div>
-          <span class="popular-tag">🔥 Popular</span>
-        </div>
-        <div class="game-card">
-          <div class="icon">🌿</div>
-          <div class="name">Cut Grass for Brainrots</div>
-          <div class="desc">Mow lawns, earn brainrots</div>
-        </div>
-        <div class="game-card">
-          <div class="icon">💪</div>
-          <div class="name">Get Strong for Brainrots</div>
-          <div class="desc">Train hard, get buff, earn brainrots</div>
-        </div>
-        <div class="game-card">
-          <div class="icon">🍖</div>
-          <div class="name">BBQ It</div>
-          <div class="desc">Fire up the grill, cook to perfection</div>
-          <span class="popular-tag">🔥 Popular</span>
-        </div>
-        <div class="game-card">
-          <div class="icon">☕</div>
-          <div class="name">My Gaming Cafe!</div>
-          <div class="desc">Run your own gaming cafe</div>
-        </div>
-      </div>
-    </div>
+<div style="margin-bottom:20px;text-align:center;">
+<span style="background:linear-gradient(135deg,rgba(255,20,147,0.15),rgba(255,105,180,0.15));border:1px solid rgba(255,20,147,0.3);color:#ff69b4;padding:8px 20px;border-radius:20px;font-size:.85rem;font-weight:700;display:inline-block;">Top 3 Popular Scripts</span>
+</div>
 
-    <div class="cta-bar">
-      <a href="https://jnkie.com/get-key/dubuhub" class="btn-large">🔑 Get Your Free Key</a>
-      <div class="sub">Load the hub with the loadstring above after getting your key</div>
-    </div>
+<div class="top-three">
+<div class="top-card">
+<div class="rank">#1</div>
+<div class="icon"><i class="fas fa-city"></i></div>
+<div class="name">Street Life Remastered</div>
+<div class="desc">Live the street life, rise to the top</div>
+<a href="https://www.roblox.com/games/71600459831333/" class="play-btn" target="_blank">Play</a>
+</div>
+<div class="top-card">
+<div class="rank">#2</div>
+<div class="icon"><i class="fas fa-water"></i></div>
+<div class="name">Dive Down</div>
+<div class="desc">Explore the depths, collect treasure</div>
+<a href="https://www.roblox.com/games/131756752872026/" class="play-btn" target="_blank">Play</a>
+</div>
+<div class="top-card">
+<div class="rank">#3</div>
+<div class="icon"><i class="fas fa-fire"></i></div>
+<div class="name">BBQ It</div>
+<div class="desc">Fire up the grill, cook to perfection</div>
+<a href="https://www.roblox.com/games/88518003689791/" class="play-btn" target="_blank">Play</a>
+</div>
+</div>
 
-    <footer>
-      Dubu Hub &copy; 2025 &middot; <a href="https://dubuhub.vercel.app">dubuhub.vercel.app</a> &middot; <a href="https://jnkie.com/get-key/dubuhub">🔑 Get Your Key</a>
-    </footer>
-  </div>
+<div class="section-header">
+<h2>All Supported Games</h2>
+</div>
+<div class="games-grid">
 
-  <div class="toast" id="toast"></div>
+<div style="grid-column:1/-1;margin-bottom:4px;"><span style="background:#1a3a1a;color:#4ade80;padding:4px 14px;border-radius:12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Working &amp; Updated</span></div>
 
-  <script>
-    async function copyLoadstring() {
-      const text = 'loadstring(game:HttpGet("https://dubuhub.vercel.app/loader.lua"))()';
-      try {
-        await navigator.clipboard.writeText(text);
-        showToast('Loadstring copied! 📋');
-      } catch {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        ta.remove();
-        showToast('Loadstring copied! 📋');
-      }
-    }
+<div class="game-card" style="border-color:rgba(74,222,128,0.2);">
+<a href="https://www.roblox.com/games/71600459831333/" target="_blank">
+<div class="icon"><i class="fas fa-city"></i></div>
+<div class="name">Street Life Remastered</div>
+<div class="desc">Live the street life, rise to the top</div>
+<span class="status-tag status-working">Working</span>
+</a>
+</div>
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show';
-      setTimeout(() => { t.classList.remove('show'); }, 2500);
-    }
-  </script>
+<div class="game-card" style="border-color:rgba(74,222,128,0.2);">
+<a href="https://www.roblox.com/games/88518003689791/" target="_blank">
+<div class="icon"><i class="fas fa-fire"></i></div>
+<div class="name">BBQ It</div>
+<div class="desc">Fire up the grill, cook to perfection</div>
+<span class="status-tag status-working">Working</span>
+</a>
+</div>
+
+<div class="game-card" style="border-color:rgba(74,222,128,0.2);">
+<a href="https://www.roblox.com/games/101736964164901/" target="_blank">
+<div class="icon"><i class="fas fa-gamepad"></i></div>
+<div class="name">My Gaming Cafe!</div>
+<div class="desc">Run your own gaming cafe</div>
+<span class="status-tag status-working">Working</span>
+</a>
+</div>
+
+<div style="grid-column:1/-1;margin:8px 0 4px;"><span style="background:#3a2a1a;color:#fbbf24;padding:4px 14px;border-radius:12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Outdated</span></div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/131756752872026/" target="_blank">
+<div class="icon"><i class="fas fa-water"></i></div>
+<div class="name">Dive Down</div>
+<div class="desc">Explore the depths, collect treasure</div>
+<span class="status-tag status-outdated">Outdated</span>
+</a>
+</div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/71812071769179/" target="_blank">
+<div class="icon"><i class="fas fa-brain"></i></div>
+<div class="name">Escape Guards to steal Brainrot</div>
+<div class="desc">Sneak past guards, collect brainrot</div>
+<span class="status-tag status-outdated">Outdated</span>
+</a>
+</div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/120564326011184/" target="_blank">
+<div class="icon"><i class="fas fa-video"></i></div>
+<div class="name">Be a YouTuber</div>
+<div class="desc">Grow your channel, become famous</div>
+<span class="status-tag status-outdated">Outdated</span>
+</a>
+</div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/119987266683883/" target="_blank">
+<div class="icon"><i class="fas fa-volcano"></i></div>
+<div class="name">Survive Lava for Brainrots</div>
+<div class="desc">Avoid the rising lava, collect brainrots</div>
+<span class="status-tag status-outdated">Outdated</span>
+</a>
+</div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/106772177198260/" target="_blank">
+<div class="icon"><i class="fas fa-fish"></i></div>
+<div class="name">Reel a Brainrots</div>
+<div class="desc">Fish for rare brainrots</div>
+<span class="status-tag status-outdated">Outdated</span>
+</a>
+</div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/97365843755210/" target="_blank">
+<div class="icon"><i class="fas fa-leaf"></i></div>
+<div class="name">Cut Grass for Brainrots</div>
+<div class="desc">Mow lawns, earn brainrots</div>
+<span class="status-tag status-outdated">Outdated</span>
+</a>
+</div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/84644870163414/" target="_blank">
+<div class="icon"><i class="fas fa-dumbbell"></i></div>
+<div class="name">Get Strong for Brainrots</div>
+<div class="desc">Train hard, get buff, earn brainrots</div>
+<span class="status-tag status-outdated">Outdated</span>
+</a>
+</div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/92173115378522/" target="_blank">
+<div class="icon"><i class="fas fa-water"></i></div>
+<div class="name">Split the Sea</div>
+<div class="desc">Part the waters, discover secrets</div>
+<span class="status-tag status-outdated">Outdated</span>
+</a>
+</div>
+
+<div style="grid-column:1/-1;margin:8px 0 4px;"><span style="background:#3a1a1a;color:#f87171;padding:4px 14px;border-radius:12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Discontinued</span></div>
+
+<div class="game-card">
+<a href="https://www.roblox.com/games/107892466314467/" target="_blank">
+<div class="icon"><i class="fas fa-coins"></i></div>
+<div class="name">Grow a Crypto Farm</div>
+<div class="desc">Mine crypto, build your empire</div>
+<span class="status-tag status-discontinued">Discontinued</span>
+</a>
+</div>
+
+</div>
+</div>
+
+<div class="cta-bar">
+<a href="https://jnkie.com/get-key/dubuhub" class="btn-large">Get Your Free Key</a>
+<div class="sub">Load the hub with the loadstring above after getting your key</div>
+</div>
+
+<footer>
+Dubu Hub &copy; 2025 &middot; <a href="https://dubuhub.vercel.app">dubuhub.vercel.app</a> &middot; <a href="https://jnkie.com/get-key/dubuhub">Get Your Key</a>
+</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+async function copyLoadstring() {
+const text = 'loadstring(game:HttpGet("https://dubuhub.vercel.app/loader.lua"))()';
+try { await navigator.clipboard.writeText(text); showToast('Copied!'); }
+catch { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('Copied!'); }
+}
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show'; setTimeout(function(){t.classList.remove('show')},2500); }
+</script>
 </body>
 </html>
