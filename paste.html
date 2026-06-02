@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dubuhub Paste</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+    }
+    .container { max-width: 900px; width: 100%; margin: 0 auto; padding: 20px; }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+    }
+    .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    .header h1 { font-size: 1.8rem; color: #58a6ff; }
+    .header .tabs { display: flex; gap: 4px; background: #0d1117; border-radius: 8px; padding: 4px; }
+    .header .tabs button {
+      background: transparent; border: none; color: #8b949e; padding: 8px 16px;
+      border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s;
+    }
+    .header .tabs button:hover { color: #c9d1d9; }
+    .header .tabs button.active { background: #238636; color: white; }
+    .subtitle { color: #8b949e; margin-bottom: 24px; font-size: 0.95rem; }
+    .subtitle code { background: #21262d; padding: 2px 6px; border-radius: 4px; }
+
+    /* Create Tab */
+    textarea {
+      width: 100%; height: 250px; background: #0d1117; border: 1px solid #30363d;
+      border-radius: 8px; color: #c9d1d9; padding: 16px;
+      font-family: 'Courier New', monospace; font-size: 14px; resize: vertical;
+      outline: none; transition: border-color 0.2s;
+    }
+    textarea:focus { border-color: #58a6ff; }
+    .options-row {
+      display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; align-items: center;
+    }
+    .options-row label { font-size: 0.85rem; color: #8b949e; white-space: nowrap; }
+    .options-row select, .options-row input {
+      background: #0d1117; border: 1px solid #30363d; color: #c9d1d9;
+      padding: 8px 12px; border-radius: 6px; font-size: 14px; outline: none;
+    }
+    .options-row select:focus, .options-row input:focus { border-color: #58a6ff; }
+    .options-row input[type="text"] { width: 140px; }
+    .btn {
+      background: #238636; color: white; border: none; padding: 10px 24px;
+      border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #2ea043; }
+    .btn:disabled { background: #30363d; cursor: not-allowed; }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+    .btn-danger { background: #da3633; }
+    .btn-danger:hover { background: #f85149; }
+    .btn-secondary { background: #21262d; border: 1px solid #30363d; }
+    .btn-secondary:hover { background: #30363d; }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+    /* Result */
+    .result {
+      margin-top: 16px; padding: 16px; background: #0d1117;
+      border: 1px solid #30363d; border-radius: 8px; display: none;
+    }
+    .result.show { display: block; }
+    .result label { display: block; font-size: 0.85rem; color: #8b949e; margin-bottom: 4px; }
+    .url-row {
+      display: flex; align-items: center; gap: 8px; background: #161b22;
+      padding: 10px 14px; border-radius: 6px; margin-bottom: 10px; word-break: break-all;
+    }
+    .url-row code { color: #58a6ff; font-size: 14px; flex: 1; }
+    .copy-btn {
+      background: #21262d; border: 1px solid #30363d; color: #c9d1d9;
+      padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;
+    }
+    .copy-btn:hover { background: #30363d; }
+    .lua-block {
+      margin-top: 10px; padding: 12px; background: #0d1117;
+      border: 1px solid #30363d; border-radius: 8px;
+    }
+    .lua-block code { color: #7ee787; font-family: 'Courier New', monospace; font-size: 13px; word-break: break-all; }
+    .expiry-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .expiry-permanent { background: #1a3a1a; color: #7ee787; }
+    .expiry-limited { background: #3a2a1a; color: #f0c674; }
+    .expiry-expired { background: #3a1a1a; color: #f85149; }
+
+    /* List Tab */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .list-header {
+      display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;
+    }
+    .list-header input {
+      flex: 1; min-width: 200px; background: #0d1117; border: 1px solid #30363d;
+      color: #c9d1d9; padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none;
+    }
+    .list-header input:focus { border-color: #58a6ff; }
+    .paste-item {
+      background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+      padding: 14px; margin-bottom: 8px; transition: border-color 0.2s;
+    }
+    .paste-item:hover { border-color: #484f58; }
+    .paste-item .top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+    }
+    .paste-item .info { flex: 1; min-width: 0; }
+    .paste-item .info .name {
+      color: #58a6ff; font-weight: 600; font-size: 14px; cursor: pointer;
+    }
+    .paste-item .info .name:hover { text-decoration: underline; }
+    .paste-item .info .meta {
+      font-size: 0.8rem; color: #484f58; margin-top: 4px; display: flex; gap: 16px; flex-wrap: wrap;
+    }
+    .paste-item .info .preview {
+      font-size: 0.85rem; color: #8b949e; margin-top: 6px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-family: 'Courier New', monospace;
+    }
+    .paste-item .actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .pagination {
+      display: flex; gap: 8px; justify-content: center; margin-top: 16px; align-items: center;
+    }
+    .pagination .page-info { color: #8b949e; font-size: 0.85rem; }
+    .empty-state {
+      text-align: center; padding: 40px 20px; color: #484f58;
+    }
+    .empty-state h3 { font-size: 1.2rem; margin-bottom: 8px; }
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #238636; color: white; padding: 10px 20px; border-radius: 8px;
+      font-size: 14px; display: none; z-index: 100;
+    }
+    .toast.show { display: block; }
+    .toast.error { background: #da3633; }
+    .footer { margin-top: 16px; text-align: center; color: #484f58; font-size: 0.85rem; }
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+      padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;
+    }
+    .modal h3 { color: #c9d1d9; margin-bottom: 16px; }
+    .modal .btn-group { justify-content: flex-end; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="card" style="padding: 20px 30px;">
+      <div class="header" style="margin-bottom: 0;">
+        <h1>Dubuhub Paste</h1>
+        <div class="tabs">
+          <button class="active" onclick="switchTab('create')" id="tabCreateBtn">Create</button>
+          <button onclick="switchTab('list')" id="tabListBtn">Manage</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Tab -->
+    <div class="card tab-content active" id="tabCreate">
+      <p class="subtitle">Paste text &mdash; get a <code>loadstring</code>-ready URL like <code>dubuhub.vercel.app/abc123</code></p>
+      <textarea id="pasteContent" placeholder="Paste your Lua script or text here..."></textarea>
+      <div class="options-row">
+        <label>Expires:</label>
+        <select id="expirySelect">
+          <option value="">Never (permanent)</option>
+          <option value="10m">10 minutes</option>
+          <option value="1h">1 hour</option>
+          <option value="6h">6 hours</option>
+          <option value="1d">1 day</option>
+          <option value="7d">7 days</option>
+          <option value="30d">30 days</option>
+        </select>
+        <label>Custom ID:</label>
+        <input type="text" id="customId" placeholder="leave blank = auto" maxlength="32">
+      </div>
+      <button class="btn" id="submitBtn" onclick="createPaste()">Create Paste</button>
+      <div class="result" id="result">
+        <label>Raw URL</label>
+        <div class="url-row">
+          <code id="rawUrl"></code>
+          <button class="copy-btn" onclick="copyEl('rawUrl')">Copy</button>
+        </div>
+        <label>Lua Loadstring</label>
+        <div class="lua-block">
+          <code id="luaCode"></code>
+        </div>
+        <div class="url-row" style="margin-top: 8px;">
+          <code id="luaCodeSmall"></code>
+          <button class="copy-btn" onclick="copyEl('luaCodeSmall')">Copy</button>
+        </div>
+        <label>Paste ID</label>
+        <div class="url-row" style="margin-bottom: 0;">
+          <code id="pasteId"></code>
+        </div>
+        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;" id="resultActions"></div>
+      </div>
+    </div>
+
+    <!-- List/Manage Tab -->
+    <div class="card tab-content" id="tabList">
+      <p class="subtitle">Manage your pastes &mdash; view, delete, or change expiration.</p>
+      <div class="list-header">
+        <input type="text" id="searchInput" placeholder="Search pastes by ID or content..." oninput="searchPastes()">
+        <button class="btn btn-sm" onclick="loadPastes()">Refresh</button>
+      </div>
+      <div id="pasteList">
+        <div class="empty-state">
+          <h3>No pastes yet</h3>
+          <p>Create a paste first, then manage it here.</p>
+        </div>
+      </div>
+      <div class="pagination" id="pagination" style="display:none;">
+        <button class="btn btn-sm btn-secondary" onclick="prevPage()">Previous</button>
+        <span class="page-info" id="pageInfo">Page 1</span>
+        <button class="btn btn-sm btn-secondary" onclick="nextPage()">Next</button>
+      </div>
+    </div>
+
+    <div class="footer">dubuhub.vercel.app &middot; Paste hosting with management</div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h3 id="modalTitle">Manage Paste</h3>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentPage = 1;
+    let totalPastes = 0;
+
+    // ========== TAB SWITCHING ==========
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+      document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Btn').classList.add('active');
+      if (tab === 'list') loadPastes();
+    }
+
+    // ========== CREATE PASTE ==========
+    async function createPaste() {
+      const content = document.getElementById('pasteContent').value.trim();
+      const btn = document.getElementById('submitBtn');
+
+      if (!content) { showToast('Enter some content', true); return; }
+
+      const body = { content };
+      const customId = document.getElementById('customId').value.trim();
+      if (customId) body.id = customId;
+
+      const expiryVal = document.getElementById('expirySelect').value;
+      if (expiryVal) body.expires = expiryVal;
+
+      btn.disabled = true; btn.textContent = 'Creating...';
+
+      try {
+        const res = await fetch('/api/paste', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed');
+
+        const cleanUrl = 'https://dubuhub.vercel.app/' + data.id;
+        document.getElementById('rawUrl').textContent = cleanUrl;
+        const ls = 'loadstring(game:HttpGet("' + cleanUrl + '"))()';
+        document.getElementById('luaCode').textContent = ls;
+        document.getElementById('luaCodeSmall').textContent = ls;
+        document.getElementById('pasteId').textContent = data.id;
+
+        document.getElementById('resultActions').innerHTML = `
+          <button class="btn btn-sm btn-danger" onclick="deletePaste('${data.id}')">Delete</button>
+          <button class="btn btn-sm btn-secondary" onclick="showExpiryModal('${data.id}')">Set Expiration</button>
+        `;
+        document.getElementById('result').classList.add('show');
+        showToast('Paste created! ID: ' + data.id);
+        document.getElementById('customId').value = '';
+      } catch (err) { showToast('Error: ' + err.message, true); }
+      finally { btn.disabled = false; btn.textContent = 'Create Paste'; }
+    }
+
+    // ========== LIST PASTES ==========
+    async function loadPastes(page) {
+      if (page !== undefined) currentPage = page;
+      const search = document.getElementById('searchInput').value.trim();
+      let url = '/api/paste?list=true&page=' + currentPage + '&limit=20';
+      if (search) url += '&search=' + encodeURIComponent(search);
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        totalPastes = data.total;
+        renderPasteList(data.pastes);
+        renderPagination();
+      } catch (err) {
+        document.getElementById('pasteList').innerHTML = `
+          <div class="empty-state"><h3>Error loading pastes</h3><p>${err.message}</p></div>
+        `;
+      }
+    }
+
+    function renderPasteList(pastes) {
+      const container = document.getElementById('pasteList');
+      if (!pastes || pastes.length === 0) {
+        container.innerHTML = `<div class="empty-state"><h3>No pastes found</h3><p>Create one first!</p></div>`;
+        return;
+      }
+
+      container.innerHTML = pastes.map(p => {
+        const isExpired = p.expiresAt && Date.now() > p.expiresAt;
+        const expiryLabel = isExpired ? '<span class="expiry-badge expiry-expired">Expired</span>'
+          : p.expiresAt ? '<span class="expiry-badge expiry-limited">Expires ' + timeAgo(p.expiresAt) + '</span>'
+          : '<span class="expiry-badge expiry-permanent">Permanent</span>';
+
+        const created = timeAgo(p.createdAt);
+
+        return `
+          <div class="paste-item">
+            <div class="top">
+              <div class="info">
+                <div class="name" onclick="copyText('https://dubuhub.vercel.app/${p.id}', 'URL copied!')">${p.id}</div>
+                <div class="meta">
+                  <span>Created ${created}</span>
+                  <span>${p.length || 0} bytes</span>
+                  ${expiryLabel}
+                </div>
+                <div class="preview">${escapeHtml(p.preview || '')}</div>
+              </div>
+              <div class="actions">
+                <button class="btn btn-sm btn-secondary" onclick="copyText('https://dubuhub.vercel.app/${p.id}', 'URL copied!')">Copy URL</button>
+                <button class="btn btn-sm btn-secondary" onclick="showExpiryModal('${p.id}')">Expiry</button>
+                <button class="btn btn-sm btn-danger" onclick="confirmDelete('${p.id}')">Delete</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPagination() {
+      const el = document.getElementById('pagination');
+      const info = document.getElementById('pageInfo');
+      const totalPages = Math.ceil(totalPastes / 20);
+      if (totalPages <= 1) { el.style.display = 'none'; return; }
+      el.style.display = 'flex';
+      info.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+      document.querySelector('#pagination button:first-child').disabled = currentPage <= 1;
+      document.querySelector('#pagination button:last-child').disabled = currentPage >= totalPages;
+    }
+
+    function prevPage() { if (currentPage > 1) loadPastes(currentPage - 1); }
+    function nextPage() { loadPastes(currentPage + 1); }
+    function searchPastes() { currentPage = 1; loadPastes(1); }
+
+    // ========== DELETE ==========
+    async function deletePaste(id) {
+      closeModal();
+      try {
+        const res = await fetch('/api/paste?id=' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        showToast('Paste deleted: ' + id);
+        loadPastes();
+        document.getElementById('result').classList.remove('show');
+      } catch (err) { showToast('Error: ' + err.message, true); }
+    }
+
+    function confirmDelete(id) {
+      showModal('Delete Paste', `
+        <p style="color: #8b949e; margin-bottom: 16px;">Are you sure you want to delete <strong style="color:#58a6ff;">${id}</strong>? This cannot be undone.</p>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-secondary" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-sm btn-danger" onclick="deletePaste('${id}')">Delete</button>
+        </div>
+      `);
+    }
+
+    // ========== EXPIRY ==========
+    function showExpiryModal(id) {
+      showModal('Set Expiration - ' + id, `
+        <p style="color: #8b949e; margin-bottom: 16px;">Choose how long this paste should last.</p>
+        <select id="expiryModalSelect" style="width:100%;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:16px;">
+          <option value="">Never (permanent)</option>
+          <option value="10m">10 minutes</option>
+          <option value="1h">1 hour</option>
+          <option value="6h">6 hours</option>
+          <option value="1d">1 day</option>
+          <option value="7d">7 days</option>
+          <option value="30d">30 days</option>
+        </select>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-secondary" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-sm" onclick="updateExpiry('${id}')">Save</button>
+        </div>
+      `);
+    }
+
+    async function updateExpiry(id) {
+      const val = document.getElementById('expiryModalSelect').value;
+      try {
+        const body = val ? { expires: val } : { expires: null };
+        const res = await fetch('/api/paste?id=' + id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        showToast(data.message);
+        closeModal();
+        loadPastes();
+      } catch (err) { showToast('Error: ' + err.message, true); }
+    }
+
+    // ========== MODAL ==========
+    function showModal(title, body) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = body;
+      document.getElementById('modal').classList.add('show');
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('show'); }
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // ========== UTILITIES ==========
+    async function copyEl(id) {
+      const text = document.getElementById(id).textContent;
+      await copyText(text, 'Copied!');
+    }
+    async function copyText(text, msg) {
+      try { await navigator.clipboard.writeText(text); showToast(msg); }
+      catch {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        showToast(msg);
+      }
+    }
+    function showToast(msg, isError) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast show';
+      if (isError) t.classList.add('error');
+      setTimeout(() => { t.classList.remove('show'); t.classList.remove('error'); }, 2500);
+    }
+    function timeAgo(ts) {
+      if (!ts) return 'unknown';
+      const diff = Date.now() - ts;
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + 'm ago';
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return hours + 'h ago';
+      const days = Math.floor(hours / 24);
+      if (days < 30) return days + 'd ago';
+      const months = Math.floor(days / 30);
+      return months + 'mo ago';
+    }
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Ctrl+Enter
+    document.getElementById('pasteContent').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); createPaste(); }
+    });
+  </script>
+</body>
+</html>

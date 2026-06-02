@@ -3,251 +3,549 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dubuhub Paste</title>
+  <title>Dubu Hub — Roblox Script Hub</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0d1117;
-      color: #c9d1d9;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow-x: hidden;
     }
+
+    .bg-glow {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 30% 20%, rgba(255, 20, 147, 0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 80%, rgba(255, 105, 180, 0.06) 0%, transparent 50%);
+      z-index: 0;
+      pointer-events: none;
+      animation: pulseGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+      100% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+    }
+
     .container {
-      max-width: 800px;
-      width: 100%;
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
       padding: 20px;
     }
-    .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    }
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 8px;
-      color: #58a6ff;
-    }
-    .subtitle {
-      color: #8b949e;
-      margin-bottom: 24px;
-      font-size: 0.95rem;
-    }
-    .subtitle code {
-      background: #21262d;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.9rem;
-    }
-    textarea {
-      width: 100%;
-      height: 300px;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      color: #c9d1d9;
-      padding: 16px;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    textarea:focus {
-      border-color: #58a6ff;
-    }
-    .btn {
-      background: #238636;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-      width: 100%;
-      margin-top: 16px;
-    }
-    .btn:hover { background: #2ea043; }
-    .btn:disabled {
-      background: #30363d;
-      cursor: not-allowed;
-    }
-    .result {
-      margin-top: 20px;
-      padding: 16px;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      display: none;
-    }
-    .result.show { display: block; }
-    .result label {
-      display: block;
-      font-size: 0.85rem;
-      color: #8b949e;
-      margin-bottom: 6px;
-    }
-    .result .url {
+
+    nav {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 20, 147, 0.15);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ff1493, #ff69b4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      font-weight: 400;
+      -webkit-text-fill-color: #666;
+      font-size: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
       gap: 8px;
-      background: #161b22;
-      padding: 10px 14px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      word-break: break-all;
+      flex-wrap: wrap;
     }
-    .result .url code {
-      color: #58a6ff;
-      font-size: 14px;
-      flex: 1;
-    }
-    .result .url .copy-btn {
-      background: #21262d;
-      border: 1px solid #30363d;
-      color: #c9d1d9;
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .result .url .copy-btn:hover { background: #30363d; }
-    .lua-preview {
-      margin-top: 12px;
-      padding: 12px;
-      background: #0d1117;
-      border: 1px solid #30363d;
+
+    .nav-links a {
+      color: #888;
+      text-decoration: none;
+      padding: 8px 16px;
       border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      border: 1px solid transparent;
     }
-    .lua-preview code {
-      color: #7ee787;
+
+    .nav-links a:hover {
+      color: #ff69b4;
+      border-color: rgba(255, 105, 180, 0.3);
+      background: rgba(255, 105, 180, 0.05);
+    }
+
+    .nav-links a.primary {
+      background: linear-gradient(135deg, #ff1493, #ff69b4);
+      color: #fff;
+      border: none;
+    }
+
+    .nav-links a.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(255, 20, 147, 0.4);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 20, 147, 0.1);
+      border: 1px solid rgba(255, 20, 147, 0.3);
+      color: #ff69b4;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, #ff1493, #ff69b4, #ff1493);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero p {
+      color: #888;
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+
+    .loadstring-card {
+      background: linear-gradient(135deg, rgba(255, 20, 147, 0.08), rgba(255, 105, 180, 0.04));
+      border: 1px solid rgba(255, 20, 147, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 700px;
+      margin: 0 auto 40px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loadstring-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 20, 147, 0.05) 0%, transparent 60%);
+      animation: rotateGlow 10s linear infinite;
+    }
+
+    @keyframes rotateGlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .loadstring-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #ff69b4;
+      margin-bottom: 10px;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .loadstring-card .code-block {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 14px 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .loadstring-card .code-block code {
+      flex: 1;
+      color: #ff69b4;
       font-family: 'Courier New', monospace;
-      font-size: 13px;
+      font-size: 0.9rem;
       word-break: break-all;
+      white-space: pre-wrap;
     }
+
+    .loadstring-card .code-block .copy-btn {
+      background: rgba(255, 20, 147, 0.15);
+      border: 1px solid rgba(255, 20, 147, 0.3);
+      color: #ff69b4;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      white-space: nowrap;
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    .loadstring-card .code-block .copy-btn:hover {
+      background: rgba(255, 20, 147, 0.3);
+      box-shadow: 0 0 20px rgba(255, 20, 147, 0.2);
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-item .num {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #ff69b4;
+    }
+
+    .stat-item .label {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .games-section { margin-bottom: 40px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section-header h2 { font-size: 1.5rem; font-weight: 800; }
+
+    .section-header .popular-badge {
+      background: rgba(255, 20, 147, 0.12);
+      border: 1px solid rgba(255, 20, 147, 0.25);
+      color: #ff69b4;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 18px;
+      transition: all 0.3s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(180deg, #ff1493, #ff69b4);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .game-card:hover {
+      border-color: rgba(255, 105, 180, 0.3);
+      transform: translateX(4px);
+      background: rgba(255, 20, 147, 0.05);
+    }
+
+    .game-card:hover::before { opacity: 1; }
+
+    .game-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .game-card .name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .game-card .desc { font-size: 0.8rem; color: #666; }
+
+    .game-card .popular-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff1493, #ff69b4);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .feature-card .emoji { font-size: 2rem; margin-bottom: 10px; }
+    .feature-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+    .feature-card p { font-size: 0.8rem; color: #666; }
+
+    .cta-bar {
+      text-align: center;
+      padding: 30px 0;
+      border-top: 1px solid rgba(255, 20, 147, 0.1);
+    }
+
+    .cta-bar .btn-large {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff1493, #ff69b4);
+      color: #fff;
+      text-decoration: none;
+      padding: 16px 40px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-bar .btn-large:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(255, 20, 147, 0.4);
+    }
+
+    .cta-bar .sub {
+      color: #555;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: #444;
+      font-size: 0.85rem;
+    }
+
+    footer a { color: #ff69b4; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
     .toast {
       position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: #238636;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
+      background: #1a1a1a;
+      border: 1px solid rgba(255, 20, 147, 0.3);
+      color: #ff69b4;
+      padding: 12px 24px;
+      border-radius: 10px;
       font-size: 14px;
+      font-weight: 600;
       display: none;
       z-index: 100;
+      backdrop-filter: blur(10px);
     }
+
     .toast.show { display: block; }
-    .toast.error { background: #da3633; }
-    .footer {
-      margin-top: 16px;
-      text-align: center;
-      color: #484f58;
-      font-size: 0.85rem;
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.2rem; }
+      .hero p { font-size: 1rem; }
+      .loadstring-card .code-block { flex-direction: column; gap: 10px; }
+      .loadstring-card .code-block .copy-btn { margin-left: 0; width: 100%; text-align: center; }
+      .stats-row { gap: 24px; }
+      .games-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+  <div class="bg-glow"></div>
+
   <div class="container">
-    <div class="card">
-      <h1>Dubuhub Paste</h1>
-      <p class="subtitle">Paste your script &mdash; get a clean URL like <code>dubuhub.vercel.app/abc123</code></p>
+    <nav>
+      <div class="logo">Dubu Hub <span>// roblox</span></div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/paste">Paste</a>
+        <a href="/obfuscator">Obfuscator</a>
+        <a href="#games">Games</a>
+        <a href="/paste" class="primary">Create Script</a>
+      </div>
+    </nav>
 
-      <textarea id="pasteContent" placeholder="Paste your Lua script or text here..."></textarea>
-      <button class="btn" id="submitBtn" onclick="createPaste()">Create Paste</button>
+    <div class="hero">
+      <div class="hero-badge">🎮 v1.0 • Roblox Script Hub</div>
+      <h1>Your all-in-one<br><span class="gradient">script hub</span> for Roblox!</h1>
+      <p>Enhance your gameplay with powerful, easy‑to‑use features. Load instantly with a single <code style="color:#ff69b4;">loadstring</code>.</p>
+    </div>
 
-      <div class="result" id="result">
-        <label>Raw URL (for loadstring)</label>
-        <div class="url">
-          <code id="rawUrl"></code>
-          <button class="copy-btn" onclick="copyRawUrl()">Copy</button>
+    <div class="loadstring-card">
+      <div class="label">⚡ Main Loadstring</div>
+      <div class="code-block">
+        <code>loadstring(game:HttpGet("https://dubuhub.vercel.app/loader.lua"))()</code>
+        <button class="copy-btn" onclick="copyLoadstring()">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item"><div class="num">12</div><div class="label">Supported Games</div></div>
+      <div class="stat-item"><div class="num">3</div><div class="label">🔥 Popular Now</div></div>
+      <div class="stat-item"><div class="num">∞</div><div class="label">Free to Use</div></div>
+    </div>
+
+    <div class="features">
+      <div class="feature-card"><div class="emoji">⚡</div><h4>Instant Load</h4><p>One loadstring, zero hassle</p></div>
+      <div class="feature-card"><div class="emoji">🛡️</div><h4>Safe & Secure</h4><p>Regularly updated scripts</p></div>
+      <div class="feature-card"><div class="emoji">🎯</div><h4>Game Specific</h4><p>Tailored for each game</p></div>
+      <div class="feature-card"><div class="emoji">💎</div><h4>Free Forever</h4><p>No paywalls, no keys</p></div>
+    </div>
+
+    <div class="games-section" id="games">
+      <div class="section-header">
+        <h2>🎮 Supported Games</h2>
+        <span class="popular-badge">🔥 Most Popular: Street Life, BBQ It, Dive Down</span>
+      </div>
+      <div class="games-grid">
+        <div class="game-card">
+          <div class="icon">🤿</div>
+          <div class="name">Dive Down</div>
+          <div class="desc">Explore the depths, collect treasure</div>
+          <span class="popular-tag">🔥 Popular</span>
         </div>
-
-        <label>Lua Loadstring</label>
-        <div class="lua-preview">
-          <code id="luaCode"></code>
+        <div class="game-card">
+          <div class="icon">🧠</div>
+          <div class="name">Escape Guards to steal Brainrot</div>
+          <div class="desc">Sneak past guards, collect brainrot</div>
         </div>
-        <div class="url" style="margin-top: 8px;">
-          <code id="luaCodeSmall"></code>
-          <button class="copy-btn" onclick="copyLuaCode()">Copy</button>
+        <div class="game-card">
+          <div class="icon">🎬</div>
+          <div class="name">Be a YouTuber</div>
+          <div class="desc">Grow your channel, become famous</div>
         </div>
-
-        <label>Paste ID</label>
-        <div class="url" style="margin-bottom: 0;">
-          <code id="pasteId"></code>
+        <div class="game-card">
+          <div class="icon">📈</div>
+          <div class="name">Grow a Crypto Farm</div>
+          <div class="desc">Mine crypto, build your empire</div>
+        </div>
+        <div class="game-card">
+          <div class="icon">🌋</div>
+          <div class="name">Survive Lava for Brainrots</div>
+          <div class="desc">Avoid the rising lava, collect brainrots</div>
+        </div>
+        <div class="game-card">
+          <div class="icon">🎣</div>
+          <div class="name">Reel a Brainrots</div>
+          <div class="desc">Fish for rare brainrots</div>
+        </div>
+        <div class="game-card">
+          <div class="icon">🏙️</div>
+          <div class="name">Street Life Remastered</div>
+          <div class="desc">Live the street life, rise to the top</div>
+          <span class="popular-tag">🔥 Popular</span>
+        </div>
+        <div class="game-card">
+          <div class="icon">🌿</div>
+          <div class="name">Cut Grass for Brainrots</div>
+          <div class="desc">Mow lawns, earn brainrots</div>
+        </div>
+        <div class="game-card">
+          <div class="icon">💪</div>
+          <div class="name">Get Strong for Brainrots</div>
+          <div class="desc">Train hard, get buff, earn brainrots</div>
+        </div>
+        <div class="game-card">
+          <div class="icon">🍖</div>
+          <div class="name">BBQ It</div>
+          <div class="desc">Fire up the grill, cook to perfection</div>
+          <span class="popular-tag">🔥 Popular</span>
+        </div>
+        <div class="game-card">
+          <div class="icon">☕</div>
+          <div class="name">My Gaming Cafe!</div>
+          <div class="desc">Run your own gaming cafe</div>
         </div>
       </div>
     </div>
-    <div class="footer">
-      dubuhub.vercel.app &middot; Raw text hosting
+
+    <div class="cta-bar">
+      <a href="/paste" class="btn-large">🚀 Get Started — Create Your Script</a>
+      <div class="sub">Or just use the loadstring above to load the full hub</div>
     </div>
+
+    <footer>
+      Dubu Hub &copy; 2025 &middot; <a href="/paste">Paste</a> &middot; <a href="/obfuscator">Obfuscator</a> &middot; <a href="https://dubuhub.vercel.app">dubuhub.vercel.app</a>
+    </footer>
   </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
-    async function createPaste() {
-      const content = document.getElementById('pasteContent').value.trim();
-      const btn = document.getElementById('submitBtn');
-
-      if (!content) {
-        showToast('Please enter some content', true);
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = 'Creating...';
-
-      try {
-        const res = await fetch('/api/paste', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: content })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Failed to create paste');
-        }
-
-        // Force the dubuhub.vercel.app domain
-        const cleanUrl = 'https://dubuhub.vercel.app/' + data.id;
-        document.getElementById('rawUrl').textContent = cleanUrl;
-        document.getElementById('luaCode').textContent = 'loadstring(game:HttpGet("' + cleanUrl + '"))()';
-        document.getElementById('luaCodeSmall').textContent = 'loadstring(game:HttpGet("' + cleanUrl + '"))()';
-        document.getElementById('pasteId').textContent = data.id;
-        document.getElementById('result').classList.add('show');
-        showToast('Paste created successfully!');
-      } catch (err) {
-        showToast('Error: ' + err.message, true);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Create Paste';
-      }
-    }
-
-    async function copyRawUrl() {
-      const text = document.getElementById('rawUrl').textContent;
-      await copyText(text, 'Raw URL copied!');
-    }
-
-    async function copyLuaCode() {
-      const text = document.getElementById('luaCodeSmall').textContent;
-      await copyText(text, 'Loadstring copied!');
-    }
-
-    async function copyText(text, successMsg) {
+    async function copyLoadstring() {
+      const text = 'loadstring(game:HttpGet("https://dubuhub.vercel.app/loader.lua"))()';
       try {
         await navigator.clipboard.writeText(text);
-        showToast(successMsg);
+        showToast('Loadstring copied! 📋');
       } catch {
         const ta = document.createElement('textarea');
         ta.value = text;
@@ -257,27 +555,16 @@
         ta.select();
         document.execCommand('copy');
         ta.remove();
-        showToast(successMsg);
+        showToast('Loadstring copied! 📋');
       }
     }
 
-    function showToast(msg, isError) {
+    function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.className = 'toast show';
-      if (isError) t.classList.add('error');
-      setTimeout(function() {
-        t.classList.remove('show');
-        t.classList.remove('error');
-      }, 2500);
+      setTimeout(() => { t.classList.remove('show'); }, 2500);
     }
-
-    document.getElementById('pasteContent').addEventListener('keydown', function(e) {
-      if (e.ctrlKey && e.key === 'Enter') {
-        e.preventDefault();
-        createPaste();
-      }
-    });
   </script>
 </body>
 </html>

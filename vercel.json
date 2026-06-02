@@ -1,8 +1,9 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/paste", "destination": "/paste.html" },
     { "source": "/obfuscator", "destination": "/obfuscator.html" },
+    { "source": "/loader.lua", "destination": "/api/loader" },
     { "source": "/:id", "destination": "/api/paste?id=:id" }
   ]
 }
-
