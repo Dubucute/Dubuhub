@@ -77,7 +77,6 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
 
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
 
 if ($httpCode !== 200) {
     http_response_code(502);
