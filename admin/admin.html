@@ -291,17 +291,26 @@ fetch('/api/paste', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
-}).catch(function(err) {
-// If already exists, delete and recreate
-fetch('/api/paste?id=' + GAMES_PASTE_ID, {method: 'DELETE'})
-.then(function() {
+}).then(function(res) {
+if (!res.ok && res.status === 409) {
+// ID exists, delete and recreate
+fetch('/api/paste?id=' + GAMES_PASTE_ID, {method: 'DELETE'}).then(function() {
 return fetch('/api/paste', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
 });
-})
-.catch(function(){});
+}).catch(function(){});
+}
+}).catch(function(err) {
+// Network error - try delete + recreate
+fetch('/api/paste?id=' + GAMES_PASTE_ID, {method: 'DELETE'}).then(function() {
+return fetch('/api/paste', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
+});
+}).catch(function(){});
 });
 }
 
@@ -639,16 +648,24 @@ fetch('/api/paste', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
-}).catch(function(err) {
-fetch('/api/paste?id=' + TOP3_PASTE_ID, {method: 'DELETE'})
-.then(function() {
+}).then(function(res) {
+if (!res.ok && res.status === 409) {
+fetch('/api/paste?id=' + TOP3_PASTE_ID, {method: 'DELETE'}).then(function() {
 return fetch('/api/paste', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
 });
-})
-.catch(function(){});
+}).catch(function(){});
+}
+}).catch(function(err) {
+fetch('/api/paste?id=' + TOP3_PASTE_ID, {method: 'DELETE'}).then(function() {
+return fetch('/api/paste', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
+});
+}).catch(function(){});
 });
 }
 
