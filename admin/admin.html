@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DubuHub - Game Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;overflow-x:hidden}
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px;padding-bottom:20px;border-bottom:1px solid rgba(255,20,147,0.15)}
+.header-left .logo{font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#ff1493,#ff69b4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.header-left .logo-sub{font-size:.8rem;color:#555;letter-spacing:1px;text-transform:uppercase}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.8rem;font-weight:700;color:#ff69b4;background:rgba(255,20,147,0.1);border:1px solid rgba(255,20,147,0.2);text-decoration:none;transition:all .3s}
+.back-btn:hover{background:rgba(255,20,147,0.2)}
+.add-section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px;margin-bottom:24px}
+.add-section h2{font-size:1.1rem;font-weight:800;margin-bottom:16px;color:#ff69b4}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.input-group{display:flex;flex-direction:column;gap:4px}
+.input-group label{font-size:.75rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px}
+.input-group input,.input-group select,.input-group textarea{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 12px;color:#fff;font-family:'Inter',sans-serif;font-size:.85rem;outline:none;transition:border-color .3s}
+.input-group input:focus,.input-group select:focus,.input-group textarea:focus{border-color:rgba(255,20,147,0.4)}
+.input-group textarea{resize:vertical;min-height:80px}
+.input-group select{cursor:pointer;appearance:none}
+.input-group select option{background:#16161a;color:#fff}
+.preview-card{display:flex;align-items:center;gap:14px;background:rgba(255,20,147,0.04);border:1px solid rgba(255,20,147,0.12);border-radius:12px;padding:14px;margin-top:12px}
+.preview-card img{width:48px;height:48px;border-radius:8px;object-fit:cover}
+.preview-info{flex:1;min-width:0}
+.preview-info .preview-name{font-weight:700;font-size:.9rem}
+.preview-info .preview-desc{font-size:.75rem;color:#666}
+.preview-status-tag{display:inline-block;font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase}
+.btn-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;border:none;transition:all .3s;font-family:'Inter',sans-serif}
+.btn-primary{background:linear-gradient(135deg,#ff1493,#ff69b4);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,20,147,0.4)}
+.btn-secondary{background:rgba(255,20,147,0.1);border:1px solid rgba(255,20,147,0.2);color:#ff69b4}
+.btn-secondary:hover{background:rgba(255,20,147,0.2)}
+.btn-danger{background:rgba(255,50,50,0.15);border:1px solid rgba(255,50,50,0.25);color:#f87171}
+.btn-small{padding:6px 12px;font-size:.75rem}
+.games-list{display:flex;flex-direction:column;gap:8px}
+.game-item{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px}
+.game-item:hover{border-color:rgba(255,105,180,0.2)}
+.game-item img{width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0}
+.game-item .gi-info{flex:1;min-width:0}
+.game-item .gi-name{font-weight:700;font-size:.9rem}
+.game-item .gi-desc{font-size:.75rem;color:#666}
+.game-item .gi-id{font-size:.7rem;color:#444;font-family:monospace;margin-top:2px}
+.game-item .gi-actions{display:flex;gap:6px;flex-shrink:0}
+.game-item .gi-actions button{padding:6px 10px;border-radius:6px;font-size:.7rem;font-weight:700;cursor:pointer;border:none;transition:all .3s;font-family:'Inter',sans-serif}
+.edit-btn{background:rgba(255,20,147,0.1);color:#ff69b4;border:1px solid rgba(255,20,147,0.15)}
+.del-btn{background:rgba(255,50,50,0.1);color:#f87171;border:1px solid rgba(255,50,50,0.15)}
+.status-tag{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.status-working{background:#1a3a1a;color:#4ade80;border:1px solid rgba(74,222,128,0.3)}
+.status-outdated{background:#3a2a1a;color:#fbbf24;border:1px solid rgba(251,191,36,0.3)}
+.status-discontinued{background:#3a1a1a;color:#f87171;border:1px solid rgba(248,113,113,0.3)}
+.details-editor{margin-top:20px;border-top:1px solid rgba(255,255,255,0.06);padding-top:16px}
+.details-editor .de-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.details-editor .de-header h3{font-size:.9rem;font-weight:800;color:#ff69b4}
+.de-raw-toggle{font-size:.7rem;color:#555;cursor:pointer;background:none;border:none;text-decoration:underline;font-family:'Inter',sans-serif}
+.tab-editor{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px;margin-bottom:10px}
+.tab-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.tab-name-inp{flex:1;background:rgba(255,20,147,0.05);border:1px solid rgba(255,20,147,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;outline:none}
+.tab-name-inp:focus{border-color:#ff69b4}
+.tab-rm{padding:3px 7px;border-radius:4px;font-size:.65rem;font-weight:700;cursor:pointer;border:none;background:rgba(255,50,50,0.15);color:#f87171;font-family:'Inter',sans-serif}
+.feat-list{display:flex;flex-direction:column;gap:3px}
+.feat-row{display:flex;align-items:center;gap:5px}
+.feat-inp{flex:1;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:5px;padding:5px 8px;color:#fff;font-family:'Inter',sans-serif;font-size:.76rem;outline:none}
+.feat-inp:focus{border-color:rgba(255,20,147,0.3)}
+.feat-rm{padding:2px 5px;border-radius:3px;font-size:.6rem;font-weight:700;cursor:pointer;border:none;background:rgba(255,50,50,0.12);color:#f87171;font-family:'Inter',sans-serif}
+.add-feat-btn,.add-tab-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:5px;font-size:.7rem;font-weight:700;cursor:pointer;border:none;transition:all .3s;font-family:'Inter',sans-serif;margin-top:4px}
+.add-feat-btn{background:rgba(255,20,147,0.08);color:#ff69b4;border:1px solid rgba(255,20,147,0.12)}
+.add-tab-btn{background:rgba(100,200,255,0.08);color:#60a5fa;border:1px solid rgba(100,200,255,0.12)}
+.raw-details-textarea{width:100%;min-height:180px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;color:#fff;font-family:'Courier New',monospace;font-size:.78rem;outline:none;resize:vertical;display:none}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid rgba(255,105,180,0.2);color:#fff;padding:12px 24px;border-radius:10px;font-size:.85rem;font-weight:600;z-index:300;opacity:0;transition:opacity .4s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.error{border-color:rgba(255,50,50,0.3);background:#1a0a0a}
+.top3-section{background:rgba(255,215,0,0.03);border:1px solid rgba(255,215,0,0.12);border-radius:16px;padding:20px;margin-bottom:24px}
+.top3-section h2{font-size:1.1rem;font-weight:800;margin-bottom:16px;color:#ffd700;display:flex;align-items:center;gap:8px}
+.top3-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.top3-slot{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;text-align:center}
+.top3-slot .slot-label{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.top3-slot .slot-label.s1{color:#ffd700}
+.top3-slot .slot-label.s2{color:#c0c0c0}
+.top3-slot .slot-label.s3{color:#cd7f32}
+.top3-slot select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 8px;color:#fff;font-family:'Inter',sans-serif;font-size:.8rem;outline:none;cursor:pointer}
+.top3-slot select option{background:#16161a;color:#fff}
+.top3-slot .slot-preview{font-size:.75rem;color:#666;margin-top:6px;min-height:36px}
+.top3-slot .slot-preview img{width:36px;height:36px;border-radius:6px;object-fit:cover;display:block;margin:0 auto 4px}
+.top3-slot .slot-preview .sp-name{font-weight:700;color:#ddd;font-size:.8rem}
+@media(max-width:768px){.top3-grid{grid-template-columns:1fr}}
+.search-box{position:relative;margin-bottom:16px}
+.search-box input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px 12px 40px;color:#fff;font-family:'Inter',sans-serif;font-size:.85rem;outline:none}
+.search-box input:focus{border-color:rgba(255,20,147,0.4)}
+.search-box i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#444}
+.empty-state{text-align:center;padding:40px 20px;color:#555}
+.empty-state i{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+.ai-details-section{background:rgba(100,200,255,0.02);border:1px solid rgba(100,200,255,0.1);border-radius:16px;padding:16px;margin-top:20px;margin-bottom:4px}
+.ai-header h3{font-size:.9rem;font-weight:800;color:#60a5fa;display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.ai-textarea{width:100%;min-height:120px;background:rgba(255,255,255,0.03);border:1px solid rgba(100,200,255,0.12);border-radius:8px;padding:12px;color:#ccc;font-family:'Inter',sans-serif;font-size:.8rem;outline:none;resize:vertical}
+.ai-textarea:focus{border-color:rgba(100,200,255,0.3)}
+@media(max-width:768px){.input-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="header-left">
+<div class="logo">DubuHub</div>
+<div class="logo-sub">Game Manager</div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+<button class="btn btn-secondary" onclick="saveToGamesJson()" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-save"></i> Save games.json</button>
+<button class="btn btn-secondary" onclick="document.getElementById('importInput').click()" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-file-import"></i> Load games.json</button>
+<input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
+</div>
+</div>
+
+<div class="add-section">
+<h2><i class="fas fa-plus-circle"></i> <span id="formTitle">Add New Game</span></h2>
+
+<div class="input-row">
+<div class="input-group">
+<label><i class="fas fa-hashtag"></i> Game ID</label>
+<input type="text" id="gameIdInput" placeholder="e.g. 71600459831333">
+</div>
+<div class="input-group">
+<label><i class="fas fa-search"></i> Auto-Fetch</label>
+<button class="btn btn-secondary" id="fetchBtn" onclick="fetchGameInfo()" style="padding:10px 20px"><i class="fas fa-cloud-download-alt"></i> Fetch Name &amp; Image</button>
+</div>
+</div>
+
+<div class="input-row">
+<div class="input-group" style="grid-column:1/-1">
+<label><i class="fas fa-tag"></i> Game Name</label>
+<input type="text" id="gameNameInput" placeholder="Game name">
+</div>
+</div>
+
+<div class="input-row">
+<div class="input-group" style="grid-column:1/-1">
+<label><i class="fas fa-align-left"></i> Description</label>
+<input type="text" id="gameDescInput" placeholder="Short description for the card">
+</div>
+</div>
+
+<div class="input-row">
+<div class="input-group">
+<label><i class="fas fa-flag"></i> Status</label>
+<select id="gameStatusSelect">
+<option value="Working">Working</option>
+<option value="Outdated">Outdated</option>
+<option value="Discontinued">Discontinued</option>
+</select>
+</div>
+<div class="input-group">
+<label><i class="fas fa-key"></i> Key (unique ID)</label>
+<input type="text" id="gameKeyInput" placeholder="e.g. mynewgame">
+</div>
+</div>
+
+<div class="preview-card" id="previewCard" style="display:none">
+<img id="previewImg" src="" alt="">
+<div class="preview-info">
+<div class="preview-name" id="previewName">Game Name</div>
+<div class="preview-desc" id="previewDesc">Description</div>
+<span class="preview-status-tag" id="previewTag">Working</span>
+</div>
+</div>
+
+<div class="ai-details-section">
+<div class="ai-header">
+<h3><i class="fas fa-wand-magic-sparkles"></i> AI Generate Details</h3>
+</div>
+<textarea class="ai-textarea" id="aiDetailsInput" placeholder="Paste a game description here...&#10;&#10;Example:&#10;BBQ Automation (Main Tab)&#10;Auto Cook (Perfect) The script constantly looks at your cooking area...&#10;Auto Plate After meat is cooked...&#10;Auto Sell (NPC)..."></textarea>
+<button class="btn btn-secondary" onclick="generateDetails()" style="margin-top:8px"><i class="fas fa-wand-magic-sparkles"></i> Generate Tabs with AI</button>
+</div>
+
+<div class="details-editor">
+<div class="de-header">
+<h3><i class="fas fa-list"></i> Details Tabs</h3>
+<button class="de-raw-toggle" onclick="toggleRawDetails()">Edit Raw HTML</button>
+</div>
+<div id="tabsContainer"></div>
+<button class="add-tab-btn" onclick="addTab('New Tab')"><i class="fas fa-plus"></i> Add Tab</button>
+<textarea class="raw-details-textarea" id="rawDetailsArea" placeholder="Paste raw HTML..."></textarea>
+</div>
+
+<div class="btn-row">
+<button class="btn btn-primary" onclick="saveGame()"><i class="fas fa-save"></i> <span id="saveBtnText">Add Game</span></button>
+<button class="btn btn-secondary" onclick="resetForm()" style="display:none" id="cancelBtn"><i class="fas fa-times"></i> Cancel</button>
+</div>
+</div>
+
+<div class="top3-section">
+<h2><i class="fas fa-trophy"></i> Top 3 Games</h2>
+<div class="top3-grid">
+<div class="top3-slot">
+<div class="slot-label s1"><i class="fas fa-crown"></i> #1</div>
+<select id="top3select1" onchange="top3Changed(1)"><option value="">-- None --</option></select>
+<div class="slot-preview" id="top3prev1"></div>
+</div>
+<div class="top3-slot">
+<div class="slot-label s2"><i class="fas fa-medal"></i> #2</div>
+<select id="top3select2" onchange="top3Changed(2)"><option value="">-- None --</option></select>
+<div class="slot-preview" id="top3prev2"></div>
+</div>
+<div class="top3-slot">
+<div class="slot-label s3"><i class="fas fa-medal"></i> #3</div>
+<select id="top3select3" onchange="top3Changed(3)"><option value="">-- None --</option></select>
+<div class="slot-preview" id="top3prev3"></div>
+</div>
+</div>
+</div>
+<div class="search-box">
+<i class="fas fa-search"></i>
+<input type="text" id="searchInput" placeholder="Search games..." oninput="renderGames()">
+</div>
+<div class="games-list" id="gamesList"></div>
+<div class="empty-state" id="emptyState">
+<i class="fas fa-gamepad"></i>
+<p>No games found.</p>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="../games.js"></script>
+<script>
+// Check admin session - redirect to login if not authenticated
+(function() {
+try {
+if(!localStorage.getItem('dubuhub_admin_session') && !sessionStorage.getItem('dubuhub_admin_session')) {
+window.location.href = '/admin-login';
+}
+} catch(e) {
+window.location.href = '/admin-login';
+}
+})();
+
+var gamesData = {};
+var editingKey = '';
+var useRawMode = false;
+var currentTabs = [];
+
+function loadGames() {
+loadGamesData().then(function(d) {
+gamesData = d;
+renderGames();
+loadTop3();
+});
+}
+function saveStorage() {
+try { localStorage.setItem('dubuhub_games', JSON.stringify(gamesData)); } catch(e) {}
+}
+function toast(msg, err) {
+var t = document.getElementById('toast');
+t.textContent = msg;
+t.className = 'toast' + (err ? ' error' : '');
+setTimeout(function() { t.classList.add('show'); }, 10);
+setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+function escHtml(s) { if(!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function escAttr(s) { if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+// ----- FETCH -----
+async function fetchGameInfo() {
+var gameId = document.getElementById('gameIdInput').value.trim();
+if(!gameId) { toast('Enter a Game ID', true); return; }
+
+var btn = document.getElementById('fetchBtn');
+btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+btn.disabled = true;
+try {
+var res = await fetch('/api/fetch-game?id=' + encodeURIComponent(gameId));
+if(!res.ok) {
+var errData = await res.json().catch(function(){ return {error:'HTTP '+res.status}; });
+throw new Error(errData.error || 'HTTP error ' + res.status);
+}
+var data = await res.json();
+
+document.getElementById('gameNameInput').value = data.name || 'Game ' + gameId;
+if(data.thumbUrl) document.getElementById('previewImg').src = data.thumbUrl;
+if(data.shortDesc) document.getElementById('gameDescInput').value = data.shortDesc;
+
+var ki = document.getElementById('gameKeyInput');
+if(!ki.value) ki.value = (data.name||'game').toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,20) || 'g' + gameId;
+showPreview();
+toast('Fetched: ' + (data.name||'Game'));
+} catch(e) { toast('Failed: ' + e.message, true); }
+finally { btn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> Fetch Name &amp; Image'; btn.disabled = false; }
+}
+
+function showPreview() {
+document.getElementById('previewCard').style.display = 'flex';
+document.getElementById('previewName').textContent = document.getElementById('gameNameInput').value || 'Game Name';
+document.getElementById('previewDesc').textContent = document.getElementById('gameDescInput').value || 'Description';
+var st = document.getElementById('gameStatusSelect').value;
+var tag = document.getElementById('previewTag');
+tag.textContent = st;
+tag.className = 'preview-status-tag status-' + st.toLowerCase();
+}
+
+// ----- TABS EDITOR -----
+function renderTabs() {
+var container = document.getElementById('tabsContainer');
+var rawArea = document.getElementById('rawDetailsArea');
+if(useRawMode) { container.style.display = 'none'; rawArea.style.display = 'block'; return; }
+container.style.display = 'block'; rawArea.style.display = 'none';
+container.innerHTML = '';
+currentTabs.forEach(function(tab, ti) {
+var d = document.createElement('div'); d.className = 'tab-editor';
+d.innerHTML = '<div class="tab-top"><input class="tab-name-inp" value="' + escAttr(tab.name) + '" oninput="currentTabs[' + ti + '].name=this.value"><button class="tab-rm" onclick="removeTab(' + ti + ')"><i class="fas fa-times"></i></button></div><div class="feat-list" id="fl' + ti + '"></div><button class="add-feat-btn" onclick="addFeat(' + ti + ')"><i class="fas fa-plus"></i> Add Feature</button>';
+container.appendChild(d);
+var fl = document.getElementById('fl' + ti);
+tab.feats.forEach(function(f, fi) {
+var fr = document.createElement('div'); fr.className = 'feat-row';
+fr.innerHTML = '<input class="feat-inp" value="' + escAttr(f) + '" oninput="currentTabs[' + ti + '].feats[' + fi + ']=this.value"><button class="feat-rm" onclick="removeFeat(' + ti + ',' + fi + ')"><i class="fas fa-times"></i></button>';
+fl.appendChild(fr);
+});
+});
+}
+
+function addTab(n) { currentTabs.push({name: n || 'Tab', feats: ['Feature description']}); renderTabs(); }
+function removeTab(ti) { currentTabs.splice(ti, 1); renderTabs(); }
+function addFeat(ti) { currentTabs[ti].feats.push('Feature'); renderTabs(); }
+function removeFeat(ti, fi) { currentTabs[ti].feats.splice(fi, 1); renderTabs(); }
+
+function tabsToHtml(tabs) {
+if(!tabs || !tabs.length) return '<span class="feat"><i class="fas fa-check-circle"></i>Features coming soon</span>';
+var h = '';
+tabs.forEach(function(t) {
+if(t.name) h += '<strong>' + escHtml(t.name) + '</strong>';
+t.feats.forEach(function(f) {
+if(f.trim()) h += '<span class="feat"><i class="fas fa-check-circle"></i>' + escHtml(f.trim()) + '</span>';
+});
+});
+return h || '<span class="feat"><i class="fas fa-check-circle"></i>Features coming soon</span>';
+}
+
+function htmlToTabs(html) {
+if(!html || !html.trim()) return [{name:'Main Tab', feats:['Features coming soon']}];
+var tabs = [];
+var strongRe = /<strong>([\s\S]*?)<\/strong>/g;
+var featRe = /<span class="feat">.*?<i class="fas fa-check-circle"><\/i>([\s\S]*?)<\/span>/g;
+var strongs = html.match(strongRe);
+if(strongs) {
+var parts = html.split(/(<strong>[\s\S]*?<\/strong>)/);
+var curName = '', curFeats = [];
+parts.forEach(function(p) {
+var m = p.match(/<strong>([\s\S]*?)<\/strong>/);
+if(m) {
+if(curName || curFeats.length) tabs.push({name:curName, feats:curFeats.slice()});
+curName = m[1].trim(); curFeats = [];
+} else {
+var spans = p.match(/<span class="feat">.*?<i class="fas fa-check-circle"><\/i>([\s\S]*?)<\/span>/g);
+if(spans) spans.forEach(function(s) {
+var mx = s.match(/<i class="fas fa-check-circle"><\/i>([\s\S]*?)<\/span>/);
+if(mx) curFeats.push(mx[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').trim());
+});
+}
+});
+if(curName || curFeats.length) tabs.push({name:curName, feats:curFeats});
+} else {
+var feats = html.match(featRe);
+if(feats) {
+tabs.push({name:'', feats:[]});
+feats.forEach(function(s) {
+var mx = s.match(/<i class="fas fa-check-circle"><\/i>([\s\S]*?)<\/span>/);
+if(mx) tabs[0].feats.push(mx[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').trim());
+});
+} else {
+tabs.push({name:'Main Tab', feats:['Features coming soon']});
+}
+}
+return tabs;
+}
+
+function toggleRawDetails() {
+useRawMode = !useRawMode;
+if(useRawMode) document.getElementById('rawDetailsArea').value = tabsToHtml(currentTabs);
+renderTabs();
+}
+
+// ----- AI DETAILS GENERATOR -----
+async function generateDetails() {
+var text = document.getElementById('aiDetailsInput').value.trim();
+if(!text) { toast('Paste a game description first', true); return; }
+var btn = document.querySelector('.ai-details-section .btn');
+btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+btn.disabled = true;
+try {
+var res = await fetch('/api/generate-details', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({text: text})
+});
+var data = await res.json();
+if(data.tabs && data.tabs.length > 0) {
+currentTabs = data.tabs;
+useRawMode = false;
+renderTabs();
+toast('Generated ' + data.tabs.length + ' tabs with ' + data.tabs.reduce(function(s,t){return s+t.feats.length;},0) + ' features!');
+} else {
+toast('AI could not parse the text. Try a different format.', true);
+}
+} catch(e) {
+toast('Failed: ' + e.message, true);
+}
+btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Tabs with AI';
+btn.disabled = false;
+}
+
+// ----- SAVE -----
+function saveGame() {
+var key = document.getElementById('gameKeyInput').value.trim().toLowerCase();
+var gameId = document.getElementById('gameIdInput').value.trim();
+var name = document.getElementById('gameNameInput').value.trim();
+var desc = document.getElementById('gameDescInput').value.trim();
+var status = document.getElementById('gameStatusSelect').value;
+if(!key) { toast('Enter a game key', true); return; }
+if(!gameId) { toast('Enter a Game ID', true); return; }
+if(!name) { toast('Enter a game name', true); return; }
+if(!desc) { toast('Enter a description', true); return; }
+if(!/^[a-z][a-z0-9]*$/.test(key)) { toast('Key: letters/numbers only', true); return; }
+if(!editingKey && gamesData[key]) { toast('Key "'+key+'" exists', true); return; }
+var details = useRawMode ? document.getElementById('rawDetailsArea').value.trim() || tabsToHtml(currentTabs) : tabsToHtml(currentTabs);
+var img = document.getElementById('previewImg').src || 'https://tr.rbxcdn.com/180DAY-13dbf3e5a6a64d2d7f797e254383b07a/768/432/Image/Webp/noFilter';
+var entry = {name:name, icon:'fa-gamepad', gameId:gameId, status:status, statusClass:'status-'+status.toLowerCase(), desc:desc, img:img, details:details};
+if(editingKey && editingKey !== key) delete gamesData[editingKey];
+gamesData[key] = entry;
+saveStorage();
+renderGames();
+renderTop3();
+resetForm();
+toast(editingKey ? 'Updated!' : 'Added!');
+}
+
+function deleteGame(key) {
+if(!confirm('Delete "'+gamesData[key].name+'"?')) return;
+delete gamesData[key];
+// Remove from top3 if present
+for(var i = 0; i < 3; i++) {
+if(top3Keys[i] === key) {
+top3Keys[i] = '';
+document.getElementById('top3select' + (i+1)).value = '';
+}
+}
+saveStorage();
+saveTop3();
+renderGames();
+renderTop3();
+if(editingKey === key) resetForm();
+toast('Deleted');
+}
+
+function editGame(key) {
+var g = gamesData[key];
+if(!g) return;
+editingKey = key;
+document.getElementById('formTitle').textContent = 'Edit Game';
+document.getElementById('saveBtnText').textContent = 'Update Game';
+document.getElementById('cancelBtn').style.display = 'inline-flex';
+document.getElementById('gameKeyInput').value = key;
+document.getElementById('gameIdInput').value = g.gameId;
+document.getElementById('gameNameInput').value = g.name;
+document.getElementById('gameDescInput').value = g.desc;
+document.getElementById('gameStatusSelect').value = g.status;
+document.getElementById('previewImg').src = g.img || '';
+showPreview();
+currentTabs = htmlToTabs(g.details || '');
+useRawMode = false;
+renderTabs();
+document.querySelector('.add-section').scrollIntoView({behavior:'smooth'});
+}
+
+function resetForm() {
+editingKey = '';
+document.getElementById('formTitle').textContent = 'Add New Game';
+document.getElementById('saveBtnText').textContent = 'Add Game';
+document.getElementById('cancelBtn').style.display = 'none';
+document.getElementById('gameKeyInput').value = '';
+document.getElementById('gameIdInput').value = '';
+document.getElementById('gameNameInput').value = '';
+document.getElementById('gameDescInput').value = '';
+document.getElementById('gameStatusSelect').value = 'Working';
+document.getElementById('previewImg').src = '';
+document.getElementById('previewCard').style.display = 'none';
+currentTabs = [{name:'Main Tab', feats:['Feature description']}];
+useRawMode = false;
+renderTabs();
+}
+
+// ----- TOP 3 MANAGER -----
+var top3Keys = ['', '', ''];
+
+function renderTop3() {
+for(var i = 1; i <= 3; i++) {
+var sel = document.getElementById('top3select' + i);
+var cur = sel.value;
+sel.innerHTML = '<option value="">-- None --</option>';
+var keys = Object.keys(gamesData).sort();
+keys.forEach(function(k) {
+sel.innerHTML += '<option value="' + k + '">' + escHtml(gamesData[k].name) + '</option>';
+});
+if(cur && gamesData[cur]) sel.value = cur;
+else if(top3Keys[i-1] && gamesData[top3Keys[i-1]]) sel.value = top3Keys[i-1];
+else sel.value = '';
+}
+updateTop3Preview();
+}
+
+function updateTop3Preview() {
+for(var i = 1; i <= 3; i++) {
+var sel = document.getElementById('top3select' + i);
+var prev = document.getElementById('top3prev' + i);
+var k = sel.value;
+if(k && gamesData[k]) {
+var g = gamesData[k];
+prev.innerHTML = (g.img ? '<img src="' + escAttr(g.img) + '">' : '') + '<div class="sp-name">' + escHtml(g.name) + '</div><span class="status-tag status-' + g.status.toLowerCase() + '">' + g.status + '</span>';
+} else {
+prev.innerHTML = '<span style="color:#444;font-size:.7rem">No game selected</span>';
+}
+}
+}
+
+function top3Changed(pos) {
+var sel = document.getElementById('top3select' + pos);
+var newKey = sel.value;
+// Clear this key from other slots
+for(var i = 1; i <= 3; i++) {
+if(i !== pos) {
+var other = document.getElementById('top3select' + i);
+if(other.value === newKey) other.value = '';
+}
+}
+top3Keys[0] = document.getElementById('top3select1').value;
+top3Keys[1] = document.getElementById('top3select2').value;
+top3Keys[2] = document.getElementById('top3select3').value;
+updateTop3Preview();
+saveTop3();
+}
+
+function saveTop3() {
+try { localStorage.setItem('dubuhub_top3', JSON.stringify(top3Keys)); } catch(e) {}
+}
+
+function loadTop3() {
+try {
+var saved = localStorage.getItem('dubuhub_top3');
+if(saved) {
+top3Keys = JSON.parse(saved);
+renderTop3();
+} else {
+// Try loading from top3.json file
+loadTop3Data().then(function(arr) {
+top3Keys = arr;
+renderTop3();
+});
+}
+} catch(e) { renderTop3(); }
+}
+
+function renderGames() {
+var q = document.getElementById('searchInput').value.toLowerCase();
+var list = document.getElementById('gamesList');
+var empty = document.getElementById('emptyState');
+var keys = Object.keys(gamesData).filter(function(k) {
+var g = gamesData[k];
+return (k+' '+g.name+' '+g.gameId+' '+g.desc).toLowerCase().includes(q);
+});
+if(!keys.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+empty.style.display = 'none';
+var order = {Working:0, Outdated:1, Discontinued:2};
+// Sort: Working first, then Outdated, then Discontinued. Within each, alphabetically by name.
+var sortedWorking = [], sortedOutdated = [], sortedDiscontinued = [];
+keys.forEach(function(k) {
+var st = gamesData[k].status;
+if(st === 'Working') sortedWorking.push(k);
+else if(st === 'Outdated') sortedOutdated.push(k);
+else if(st === 'Discontinued') sortedDiscontinued.push(k);
+else sortedWorking.push(k);
+});
+sortedWorking.sort(function(a,b){return (gamesData[a].name||'').localeCompare(gamesData[b].name||'');});
+sortedOutdated.sort(function(a,b){return (gamesData[a].name||'').localeCompare(gamesData[b].name||'');});
+sortedDiscontinued.sort(function(a,b){return (gamesData[a].name||'').localeCompare(gamesData[b].name||'');});
+keys = sortedWorking.concat(sortedOutdated).concat(sortedDiscontinued);
+list.innerHTML = keys.map(function(k) {
+var g = gamesData[k];
+return '<div class="game-item"><img src="'+(g.img||'')+'" onerror="this.style.display=\'none\'"><div class="gi-info"><div class="gi-name">'+escHtml(g.name)+'</div><div class="gi-desc">'+escHtml(g.desc)+'</div><div class="gi-id">ID: '+g.gameId+' &middot; Key: '+k+'</div><span class="status-tag status-'+g.status.toLowerCase()+'">'+g.status+'</span></div><div class="gi-actions"><button class="edit-btn" onclick="editGame(\''+k+'\')"><i class="fas fa-pen"></i></button><button class="del-btn" onclick="deleteGame(\''+k+'\')"><i class="fas fa-trash"></i></button></div></div>';
+}).join('');
+}
+
+function saveToGamesJson() {
+// Save games.json
+var blob = new Blob([JSON.stringify(gamesData, null, 2)], {type:'application/json'});
+var a = document.createElement('a');
+a.href = URL.createObjectURL(blob);
+a.download = 'games.json';
+a.click();
+URL.revokeObjectURL(a.href);
+// Also save top3.json
+saveTop3();
+var top3Blob = new Blob([JSON.stringify({top3: top3Keys}, null, 2)], {type:'application/json'});
+var b = document.createElement('a');
+b.href = URL.createObjectURL(top3Blob);
+b.download = 'top3.json';
+b.click();
+URL.revokeObjectURL(b.href);
+toast('games.json + top3.json downloaded!');
+}
+
+function importData(ev) {
+var file = ev.target.files[0];
+if(!file) return;
+var r = new FileReader();
+r.onload = function(e) {
+try {
+var data = JSON.parse(e.target.result);
+var games = data.games || data;
+var importedTop3 = data.top3 || null;
+if(typeof games !== 'object') throw new Error('Invalid');
+var c = Object.keys(games).length;
+if(!c) throw new Error('No games');
+for(var k in games) {
+var g = games[k];
+if(!g.statusClass) g.statusClass = 'status-' + (g.status||'working').toLowerCase();
+if(!g.details) g.details = '<span class="feat"><i class="fas fa-check-circle"></i>Features coming soon</span>';
+}
+Object.assign(gamesData, games);
+// Import top3 if present
+if(importedTop3 && Array.isArray(importedTop3)) {
+top3Keys = importedTop3;
+saveTop3();
+}
+saveStorage();
+renderGames();
+renderTop3();
+toast('Loaded '+c+' games' + (importedTop3 ? ' + top 3' : ''));
+} catch(err) { toast('Import failed: '+err.message, true); }
+};
+r.readAsText(file);
+ev.target.value = '';
+}
+
+resetForm();
+loadGames();
+</script>
+</body>
+</html>

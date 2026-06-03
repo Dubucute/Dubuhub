@@ -1,0 +1,122 @@
+{
+  "streetlife": {
+    "name": "Street Life Remastered",
+    "icon": "fa-city",
+    "gameId": "71600459831333",
+    "status": "Working",
+    "statusClass": "status-working",
+    "desc": "Live the street life, rise to the top",
+    "img": "https://tr.rbxcdn.com/180DAY-6193466b6e3e15410bc1d142d26cc46b/768/432/Image/Webp/noFilter",
+    "details": "<strong>Main Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Instant Prompts - makes all proximity prompts instant</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Infinite Stamina - prevents stamina from decreasing and locks Boost permanently</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Infinite Strength - keeps your Strength at 100</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Unlock Camera - sets camera max zoom distance to 1000</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Anti AFK - prevents being kicked for idling</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>ATM - withdraw, deposit, or deposit all cash</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Send Money - send cash to any player</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Commands - quick access to /handto, /pay, /drop, and custom commands</span><strong>Money Farm Tab (NEW)</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Money Generator - stand near Gun Buyer, auto-spawn and auto-sell gun for rapid cash</span><strong>Teleports Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Spawn Scooter - withdraws $250 and spawns a scooter</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Car Spawner - spawn any car from dealership</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Other Player Car - unlock and teleport other vehicles</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Misc Locations - vault, jewel, loot buyer, mechanic, etc</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Airdrop Spawns - court, the ice, oilrig, etc</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Copy &amp; Paste Position - save coordinates</span><strong>House Rob Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Unlock &amp; teleport to apartments</span><strong>Combat Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Aimlock with adjustable FOV, range, smoothing</span><strong>ESP Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Player ESP with name, health bar, tracer, box</span><strong>Shop Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Item, food, weapon, ammo, mask shops</span><strong>Crypto Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Live crypto values, auto-buy/sell</span><strong>Car Utils Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Car fly, no-clip</span><strong>UI Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Interface launcher for game UIs</span><strong>Misc Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Additional utilities</span>"
+  },
+  "bbqit": {
+    "name": "BBQ It",
+    "icon": "fa-fire",
+    "gameId": "88518003689791",
+    "status": "Working",
+    "statusClass": "status-working",
+    "desc": "Fire up the grill, cook to perfection",
+    "img": "https://tr.rbxcdn.com/180DAY-7552ab8effdb3d4d273db2a7d83564ab/768/432/Image/Webp/noFilter",
+    "details": "<strong>BBQ Automation (Main Tab)</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Cook (Perfect) - automatically places raw meat on grills, watches it cook, picks up when \"Perfect\"</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Plate - takes cooked meat and places onto empty plates</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Sell (NPC) - automatically accepts NPC offers</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Instant Prompts - all interactions become instant</span><strong>Shop Auto-Buy</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Multi-select for limited-stock meat &amp; totems</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Monitors stock every 1.5-2 seconds</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Cooldowns prevent spam (0.8s meat, 1.5s totems)</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Restock alerts with notifications</span><strong>Player Controls</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Walkspeed, jump power, gravity, time of day sliders</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Infinite jump, noclip, rejoin, spoof</span>"
+  },
+  "mygamingcafe": {
+    "name": "My Gaming Cafe!",
+    "icon": "fa-gamepad",
+    "gameId": "101736964164901",
+    "status": "Working",
+    "statusClass": "status-working",
+    "desc": "Run your own gaming cafe",
+    "img": "https://tr.rbxcdn.com/180DAY-6a880c0934c4fba0697e88f09368bca5/768/432/Image/Webp/noFilter",
+    "details": "<strong>Spin Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Spin Once - manually spin the wheel for PC parts</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Reveal Once - show all possible parts</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto-Spin - spins every 3s, ignores blacklisted parts, stops on unique part</span><strong>Teleport Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Teleport to Floor 1 through Floor 8</span><strong>Player Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Walkspeed, jump power, gravity, time of day</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Rejoin, spoof, infinite jump, noclip</span>"
+  },
+  "divedown": {
+    "name": "Dive Down",
+    "icon": "fa-water",
+    "gameId": "131756752872026",
+    "status": "Outdated",
+    "statusClass": "status-outdated",
+    "desc": "Explore the depths, collect treasure",
+    "img": "https://tr.rbxcdn.com/180DAY-5a8c9fa7d8a1b85dd70bb09ef21941f4/768/432/Image/Webp/noFilter",
+    "details": "<strong>Auto-Catching Methods</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Method 1: Fish + Variant - select fish names and variants</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Method 2: Rarity + Variant - select rarities and variants</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Method 3: Zone Farm - auto-teleport to zone, prioritizes better variants</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Oxygen - pauses when drowning, teleports to oxygen, resumes</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Equip Best Fish - equips highest-value fish</span><strong>ESP Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Fish ESP with name, variant, weight, distance</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Rarity color-coding</span><strong>Teleport Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Plot teleports (Aquarium, Shops, Plot)</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Fish zone teleports + Location saver</span><strong>Shop Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Sell All, Show Prices, Buy Items</span><strong>Player Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Speed, jump, gravity, rejoin, infinite jump</span><strong>Misc Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>FPS booster, anti AFK, Infinite Yield</span>"
+  },
+  "escapeguards": {
+    "name": "Escape Guards to steal Brainrot",
+    "icon": "fa-brain",
+    "gameId": "71812071769179",
+    "status": "Outdated",
+    "statusClass": "status-outdated",
+    "desc": "Sneak past guards, collect brainrot",
+    "img": "https://tr.rbxcdn.com/180DAY-21f4afecfebe9c59dd43d9b361e2b9a9/768/432/Image/Webp/noFilter",
+    "details": "<strong>Auto Get Brainrot</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Collect Brainrot of selected rarities (Divine, Exclusive, Secret, God, Mythical)</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Instant Prompts enabled on load</span><strong>Player Controls</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Walkspeed, jump power, gravity, time of day</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Infinite Jump, Noclip</span><strong>Location Saver</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Save, teleport, delete custom locations</span>"
+  },
+  "beyoutuber": {
+    "name": "Be a YouTuber",
+    "icon": "fa-video",
+    "gameId": "120564326011184",
+    "status": "Outdated",
+    "statusClass": "status-outdated",
+    "desc": "Grow your channel, become famous",
+    "img": "https://tr.rbxcdn.com/180DAY-6b1766293621da78d02a6205c920a0ad/768/432/Image/Webp/noFilter",
+    "details": "<span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Script features available upon loading the hub</span>"
+  },
+  "survivelava": {
+    "name": "Survive Lava for Brainrots",
+    "icon": "fa-volcano",
+    "gameId": "119987266683883",
+    "status": "Outdated",
+    "statusClass": "status-outdated",
+    "desc": "Avoid the rising lava, collect brainrots",
+    "img": "https://tr.rbxcdn.com/180DAY-13dbf3e5a6a64d2d7f797e254383b07a/768/432/Image/Webp/noFilter",
+    "details": "<strong>Auto Farm Brainrot</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Select rarities: Celestial, Godly, Secret, Mythic, Legendary, Epic, Rare, Common</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Mutation Priority: Rainbow > Cheese > Bloodmoon > Emerald > Diamond > Gold > Normal</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>UUID Tracking - prevents re-farming same Brainrot</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Max Collects Before Return (1-6)</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Instant Retry - re-attempts failed collections</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Instant Prompts enabled automatically</span><strong>Player Controls</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Walkspeed, jump power, gravity, time of day</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Infinite Jump &amp; Noclip</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Location Saver</span><strong>Shop Upgrades</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Manual sell, auto-upgrade Carry and Speed</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Spawn notifications for Celestial/Godly Brainrots</span>"
+  },
+  "reelbrainrot": {
+    "name": "Reel a Brainrots",
+    "icon": "fa-fish",
+    "gameId": "106772177198260",
+    "status": "Outdated",
+    "statusClass": "status-outdated",
+    "desc": "Fish for rare brainrots",
+    "img": "https://tr.rbxcdn.com/180DAY-83b3bfab2d11742d4f750ab9bbcf5f22/768/432/Image/Webp/noFilter",
+    "details": "<strong>Main Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Catch - automatically catch fish instantly</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Equip Best Brainrot - one-click equip</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Collect Cash - collects from all Brainrots</span><strong>Shop Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Sell (Multi-Select) - select rarities to sell</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Buy Rods - FishingRod1 to FishingRod18</span><strong>Upgrade Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Upgrade Power, Base, Auto Rebirth</span>"
+  },
+  "cutgrass": {
+    "name": "Cut Grass for Brainrots",
+    "icon": "fa-leaf",
+    "gameId": "97365843755210",
+    "status": "Outdated",
+    "statusClass": "status-outdated",
+    "desc": "Mow lawns, earn brainrots",
+    "img": "https://tr.rbxcdn.com/180DAY-3497d9aea131633fd64e2ddf2ef805a4/768/432/Image/Webp/noFilter",
+    "details": "<span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Script features available upon loading the hub</span>"
+  },
+  "getstrong": {
+    "name": "Get Strong for Brainrots",
+    "icon": "fa-dumbbell",
+    "gameId": "84644870163414",
+    "status": "Outdated",
+    "statusClass": "status-outdated",
+    "desc": "Train hard, get buff, earn brainrots",
+    "img": "https://tr.rbxcdn.com/180DAY-2416f494a5aea2935f83b2f86a368c03/768/432/Image/Webp/noFilter",
+    "details": "<strong>Main Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Instant Prompts - all proximity prompts instant</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Set Infinite Power - sets Power to INFINITE</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Break All Walls (No Portal) - destroys walls automatically</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Unlock All Worlds - breaks walls, moves to next world</span><strong>Brainrot Farming</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Select specific brainrot names to farm</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Filter by mutation (Normal, Gold, Diamond, etc)</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Farm by rarity + mutation</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Stop Farming button</span><strong>Utility Buttons</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Sell All Brainrot, Collect All Money</span><strong>Misc Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Load Infinite Yield, Anti AFK</span><strong>Player Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Walkspeed, jump, gravity, time, rejoin, spoof</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Infinite Jump, Noclip</span><strong>Teleport Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Area teleports for each rarity, safe zone</span>"
+  },
+  "splitthesea": {
+    "name": "Split the Sea",
+    "icon": "fa-water",
+    "gameId": "92173115378522",
+    "status": "Outdated",
+    "statusClass": "status-outdated",
+    "desc": "Part the waters, discover secrets",
+    "img": "https://tr.rbxcdn.com/180DAY-70d4112ae63550009b96140c6ed45198/768/432/Image/Webp/noFilter",
+    "details": "<strong>Main Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Farm - splits, collects, sells automatically</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Teleport to SplitZone, Split, Sell All, Get Loot</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Sell toggle</span><strong>Misc Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Walkspeed (up to 500), Infinite Jump, Anti AFK</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Load Infinite Yield, Copy Position</span><strong>Teleport Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Island teleports + Unlock islands</span><strong>Upgrade Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Upgrade Speed/Jump, Auto Rebirth</span><strong>Shop Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Sticks, Eggs, Boosts by island, Refresh Shop</span>"
+  },
+  "cryptofarm": {
+    "name": "Grow a Crypto Farm",
+    "icon": "fa-coins",
+    "gameId": "107892466314467",
+    "status": "Discontinued",
+    "statusClass": "status-discontinued",
+    "desc": "Mine crypto, build your empire",
+    "img": "https://tr.rbxcdn.com/180DAY-48e31c937e312b0953dfe4a6774210fb/768/432/Image/Webp/noFilter",
+    "details": "<strong>Main Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Collect Crypto - collects from all machines</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Sell Crypto - sells at set interval</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Collect Now / Sell Now buttons</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Adjustable collect (1-30s) and sell (5-60s) intervals</span><strong>Event Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Auto Damage UFO, Auto Submit Alien Coins</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Alien Shop with auto-buy</span><strong>Shop Tab</strong><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Machine Shop - 21 machines</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Pet Shop - 4 eggs (Basic, Golden, Hacker, Lumin)</span><span class=\"feat\"><i class=\"fas fa-check-circle\"></i>Gear Shop - 12 items, Base Shop - 5 themes</span>"
+  }
+}
