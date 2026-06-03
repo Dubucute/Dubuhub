@@ -15,8 +15,6 @@
     { "source": "/api/fetch-game", "destination": "/api/fetch-game.php" },
     { "source": "/api/generate-details", "destination": "/api/generate-details.php" },
     { "source": "/api/obfuscate", "destination": "/misc/api/obfuscate" },
-    { "source": "/api/paste", "destination": "/misc/api/paste" },
-    { "source": "/api/paste/:path*", "destination": "/misc/api/paste/:path*" },
     { "source": "/paste", "destination": "/misc/paste.html" },
     { "source": "/obfuscator", "destination": "/misc/obfuscator.html" },
     { "source": "/loader.lua", "destination": "/api/loader" },
