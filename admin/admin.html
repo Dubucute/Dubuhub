@@ -276,6 +276,12 @@ loadTop3();
 }
 function saveStorage() {
 try { localStorage.setItem('dubuhub_games', JSON.stringify(gamesData)); } catch(e) {}
+// Also sync to server so all visitors see changes
+fetch('/api/games', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify(gamesData)
+}).catch(function(){});
 }
 function toast(msg, err) {
 var t = document.getElementById('toast');
@@ -589,6 +595,12 @@ saveTop3();
 
 function saveTop3() {
 try { localStorage.setItem('dubuhub_top3', JSON.stringify(top3Keys)); } catch(e) {}
+// Also save to server via API so all visitors see changes
+fetch('/api/top3', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({top3: top3Keys})
+}).catch(function(){});
 }
 
 function loadTop3() {

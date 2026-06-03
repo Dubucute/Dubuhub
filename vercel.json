@@ -17,6 +17,8 @@
     { "source": "/api/obfuscate", "destination": "/misc/api/obfuscate" },
     { "source": "/api/paste", "destination": "/misc/api/paste" },
     { "source": "/api/paste/:path*", "destination": "/misc/api/paste/:path*" },
+    { "source": "/api/top3", "destination": "/misc/api/top3" },
+    { "source": "/api/games", "destination": "/misc/api/games" },
     { "source": "/paste", "destination": "/misc/paste.html" },
     { "source": "/obfuscator", "destination": "/misc/obfuscator.html" },
     { "source": "/loader.lua", "destination": "/api/loader" },
