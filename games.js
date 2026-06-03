@@ -1,18 +1,25 @@
 // DubuHub Games Database
 // This file is shared between index.html and admin.html
 
+// Special IDs used in the paste API for persistent storage
+var GAMES_PASTE_ID = '_dubuhub_games_config_';
+var TOP3_PASTE_ID = '_dubuhub_top3_config_';
+
 // Returns a promise that resolves to the games object
 async function loadGamesData() {
   var games = {};
 
-  // Try the API first (persistent server-side storage)
+  // Try the paste API first (persistent server-side storage - synced across all users)
   try {
-    var res = await fetch('/api/games');
+    var res = await fetch('/api/paste?id=' + GAMES_PASTE_ID);
     if (res.ok) {
-      var json = await res.json();
-      if (typeof json === 'object' && Object.keys(json).length > 0) {
-        games = json;
-      }
+      var text = await res.text();
+      try {
+        var parsed = JSON.parse(text);
+        if (typeof parsed === 'object' && Object.keys(parsed).length > 0) {
+          games = parsed;
+        }
+      } catch(e) {}
     }
   } catch(e) {}
 
@@ -41,14 +48,17 @@ async function loadGamesData() {
   return games;
 }
 
-// Load top3.json - returns array of 3 keys (or empty)
+// Load top3 - returns array of 3 keys (or empty)
 async function loadTop3Data() {
-  // Try the API first (persistent server-side storage)
+  // Try the paste API first (persistent server-side storage - synced across all users)
   try {
-    var res = await fetch('/api/top3');
+    var res = await fetch('/api/paste?id=' + TOP3_PASTE_ID);
     if (res.ok) {
-      var json = await res.json();
-      if (json.top3 && Array.isArray(json.top3)) return json.top3;
+      var text = await res.text();
+      try {
+        var data = JSON.parse(text);
+        if (data.top3 && Array.isArray(data.top3)) return data.top3;
+      } catch(e) {}
     }
   } catch(e) {}
   // Fallback to static file

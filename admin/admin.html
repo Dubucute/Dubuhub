@@ -127,6 +127,8 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 <button class="btn btn-secondary" onclick="saveToGamesJson()" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-save"></i> Save games.json</button>
 <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-file-import"></i> Load games.json</button>
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
+<button class="btn btn-secondary" onclick="window.open('/api/paste?id=' + GAMES_PASTE_ID, '_blank')" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-database"></i> View Games</button>
+<button class="btn btn-secondary" onclick="window.open('/api/paste?id=' + TOP3_PASTE_ID, '_blank')" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-database"></i> View Top3</button>
 </div>
 </div>
 
@@ -266,6 +268,8 @@ var gamesData = {};
 var editingKey = '';
 var useRawMode = false;
 var currentTabs = [];
+var GAMES_PASTE_ID = '_dubuhub_games_config_';
+var TOP3_PASTE_ID = '_dubuhub_top3_config_';
 
 function loadGames() {
 loadGamesData().then(function(d) {
@@ -276,12 +280,28 @@ loadTop3();
 }
 function saveStorage() {
 try { localStorage.setItem('dubuhub_games', JSON.stringify(gamesData)); } catch(e) {}
-// Also sync to server so all visitors see changes
-fetch('/api/games', {
+// Save to server for all visitors (store as paste in KV)
+syncToServer();
+}
+
+function syncToServer() {
+// Sync games to paste API
+fetch('/api/paste', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
-body: JSON.stringify(gamesData)
-}).catch(function(){});
+body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
+}).catch(function(err) {
+// If already exists, delete and recreate
+fetch('/api/paste?id=' + GAMES_PASTE_ID, {method: 'DELETE'})
+.then(function() {
+return fetch('/api/paste', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
+});
+})
+.catch(function(){});
+});
 }
 function toast(msg, err) {
 var t = document.getElementById('toast');
@@ -595,12 +615,22 @@ saveTop3();
 
 function saveTop3() {
 try { localStorage.setItem('dubuhub_top3', JSON.stringify(top3Keys)); } catch(e) {}
-// Also save to server via API so all visitors see changes
-fetch('/api/top3', {
+// Sync top3 to paste API for all visitors
+fetch('/api/paste', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
-body: JSON.stringify({top3: top3Keys})
-}).catch(function(){});
+body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
+}).catch(function(err) {
+fetch('/api/paste?id=' + TOP3_PASTE_ID, {method: 'DELETE'})
+.then(function() {
+return fetch('/api/paste', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
+});
+})
+.catch(function(){});
+});
 }
 
 function loadTop3() {
