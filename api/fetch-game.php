@@ -46,7 +46,6 @@ function fetchUrl($url) {
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
-    curl_close($ch);
     
     if ($error) return null;
     return json_decode($response, true);
@@ -85,7 +84,6 @@ function generateShortDesc($gameName, $description) {
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
     
     if ($httpCode === 200) {
         $json = json_decode($response, true);
