@@ -76,7 +76,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 2
 .top-card{background:rgba(255,20,147,0.06);border:1px solid rgba(255,20,147,0.25);border-radius:16px;padding:24px;text-align:center;transition:all .3s;position:relative;overflow:hidden}
 .top-card:hover{transform:translateY(-4px);border-color:#ff69b4;box-shadow:0 8px 30px rgba(255,20,147,0.2)}
 .top-card .rank{position:absolute;top:10px;left:14px;font-size:.7rem;font-weight:900;color:#ff69b4;text-transform:uppercase;letter-spacing:1px}
-.top-card .icon{font-size:2.5rem;margin-bottom:10px;color:#ff69b4}
+.top-card .icon{width:56px;height:56px;border-radius:10px;overflow:hidden;margin:0 auto 10px;border:2px solid rgba(255,20,147,0.2);box-shadow:0 0 12px rgba(255,20,147,0.1)}
+.top-card .icon img{width:100%;height:100%;object-fit:cover;display:block}
 .top-card .name{font-weight:800;font-size:1.1rem;margin-bottom:6px;color:#fff}
 .top-card .desc{font-size:.8rem;color:#888;margin-bottom:10px}
 .top-card .play-btn{display:inline-block;background:linear-gradient(135deg,#ff1493,#ff69b4);color:#fff;padding:8px 24px;border-radius:8px;font-size:.8rem;font-weight:700;text-decoration:none;transition:all .3s;border:none;cursor:pointer}
@@ -84,16 +85,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 2
 @media(max-width:768px){.top-three{grid-template-columns:1fr}}
 
 .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.game-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px;transition:all .3s;cursor:default;position:relative;overflow:hidden}
+.game-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:18px 18px 36px;transition:all .3s;cursor:default;position:relative;overflow:hidden}
 .game-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#ff1493,#ff69b4);opacity:0;transition:opacity .3s}
 .game-card:hover{border-color:rgba(255,105,180,0.3);transform:translateX(4px);background:rgba(255,20,147,0.05)}
 .game-card:hover::before{opacity:1}
-.game-card .icon{font-size:1.5rem;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.game-card .icon{width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,20,147,0.15)}
+.game-card .icon img{width:100%;height:100%;object-fit:cover;display:block}
+.game-card .card-body{display:flex;flex-direction:column;min-width:0}
+.game-card .card-top{display:flex;align-items:flex-start;gap:12px}
 .game-card .name{font-weight:700;font-size:1rem;margin-bottom:4px}
-.game-card .desc{font-size:.8rem;color:#666}
-.game-card a{color:inherit;text-decoration:none;display:block}
-.game-card a:hover{color:inherit}
-.game-card .status-tag{display:inline-block;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:8px;text-transform:uppercase;letter-spacing:.5px}
+.game-card .desc{font-size:.8rem;color:#666;flex:1;margin-bottom:20px}
+.game-card{cursor:pointer}
+.game-card a{color:inherit;text-decoration:none;display:block;pointer-events:none}
+.game-card .status-tag{position:absolute;bottom:12px;right:12px;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
 .status-working{background:#1a3a1a;color:#4ade80;border:1px solid rgba(74,222,128,0.3)}
 .status-outdated{background:#3a2a1a;color:#fbbf24;border:1px solid rgba(251,191,36,0.3)}
 .status-discontinued{background:#3a1a1a;color:#f87171;border:1px solid rgba(248,113,113,0.3)}
@@ -118,6 +122,32 @@ footer a:hover{text-decoration:underline}
 
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid rgba(255,20,147,0.3);color:#ff69b4;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;display:none;z-index:100;backdrop-filter:blur(10px)}
 .toast.show{display:block}
+
+/* modal */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s ease}
+.modal-overlay.show{display:flex;opacity:1}
+.modal{background:#16161a;border:1px solid rgba(255,20,147,0.2);border-radius:16px;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:28px;position:relative;transform:scale(0.7);opacity:0;transition:transform .3s cubic-bezier(0.34,1.56,0.64,1),opacity .25s ease}
+.modal-overlay.show .modal{transform:scale(1);opacity:1}
+.modal-close{position:absolute;top:14px;right:18px;background:none;border:none;color:#666;font-size:1.5rem;cursor:pointer;transition:color .3s;line-height:1}
+.modal-close:hover{color:#ff69b4}
+.modal .modal-title{font-size:1.5rem;font-weight:800;margin-bottom:4px}
+.modal .modal-status{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:10px;margin:6px 0 12px;text-transform:uppercase;letter-spacing:.5px}
+.modal .modal-actions{display:flex;gap:10px;margin:16px 0 20px;flex-wrap:wrap}
+.modal .modal-actions a,.modal .modal-actions button{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-size:.85rem;font-weight:700;text-decoration:none;cursor:pointer;border:none;transition:all .3s}
+.modal .btn-play{background:linear-gradient(135deg,#ff1493,#ff69b4);color:#fff}
+.modal .btn-play:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,20,147,0.4)}
+.modal .btn-copy{background:rgba(255,20,147,0.12);border:1px solid rgba(255,20,147,0.25);color:#ff69b4}
+.modal .btn-copy:hover{background:rgba(255,20,147,0.25)}
+.modal .modal-details{font-size:.85rem;color:#aaa;line-height:1.7;white-space:pre-wrap}
+.modal .modal-details strong{color:#ff69b4;display:block;margin-top:14px;margin-bottom:6px;font-size:.95rem;letter-spacing:0.3px}
+.modal .modal-details strong:first-child{margin-top:0}
+.modal .modal-details .feat{color:#ccc;padding-left:12px;border-left:2px solid rgba(255,20,147,0.2);margin:3px 0;display:block}
+.modal .modal-details .feat i{color:#ff69b4;margin-right:6px;font-size:.65rem}
+.modal .modal-details .section{margin-bottom:8px}
+.modal::-webkit-scrollbar{width:6px}
+.modal::-webkit-scrollbar-track{background:transparent}
+.modal::-webkit-scrollbar-thumb{background:rgba(255,20,147,0.3);border-radius:3px}
+.modal-img{width:100%;border-radius:10px;margin-bottom:12px;max-height:200px;object-fit:cover;border:1px solid rgba(255,20,147,0.15)}
 
 @media(max-width:768px){.hero h1{font-size:2.2rem}.hero p{font-size:1rem}.loadstring-card .code-block{flex-direction:column;gap:10px}.loadstring-card .code-block .copy-btn{margin-left:0;width:100%;text-align:center}.stats-row{gap:24px}.games-grid{grid-template-columns:1fr}}
 </style>
@@ -180,150 +210,12 @@ footer a:hover{text-decoration:underline}
 <span style="background:linear-gradient(135deg,rgba(255,20,147,0.15),rgba(255,105,180,0.15));border:1px solid rgba(255,20,147,0.3);color:#ff69b4;padding:8px 20px;border-radius:20px;font-size:.85rem;font-weight:700;display:inline-block;">Top 3 Popular Scripts</span>
 </div>
 
-<div class="top-three">
-<div class="top-card">
-<div class="rank">#1</div>
-<div class="icon"><i class="fas fa-city"></i></div>
-<div class="name">Street Life Remastered</div>
-<div class="desc">Live the street life, rise to the top</div>
-<a href="https://www.roblox.com/games/71600459831333/" class="play-btn" target="_blank">Play</a>
-</div>
-<div class="top-card">
-<div class="rank">#2</div>
-<div class="icon"><i class="fas fa-water"></i></div>
-<div class="name">Dive Down</div>
-<div class="desc">Explore the depths, collect treasure</div>
-<a href="https://www.roblox.com/games/131756752872026/" class="play-btn" target="_blank">Play</a>
-</div>
-<div class="top-card">
-<div class="rank">#3</div>
-<div class="icon"><i class="fas fa-fire"></i></div>
-<div class="name">BBQ It</div>
-<div class="desc">Fire up the grill, cook to perfection</div>
-<a href="https://www.roblox.com/games/88518003689791/" class="play-btn" target="_blank">Play</a>
-</div>
-</div>
+<div class="top-three" id="topGames"></div>
 
 <div class="section-header">
 <h2>All Supported Games</h2>
 </div>
-<div class="games-grid">
-
-<div style="grid-column:1/-1;margin-bottom:4px;"><span style="background:#1a3a1a;color:#4ade80;padding:4px 14px;border-radius:12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Working &amp; Updated</span></div>
-
-<div class="game-card" style="border-color:rgba(74,222,128,0.2);">
-<a href="https://www.roblox.com/games/71600459831333/" target="_blank">
-<div class="icon"><i class="fas fa-city"></i></div>
-<div class="name">Street Life Remastered</div>
-<div class="desc">Live the street life, rise to the top</div>
-<span class="status-tag status-working">Working</span>
-</a>
-</div>
-
-<div class="game-card" style="border-color:rgba(74,222,128,0.2);">
-<a href="https://www.roblox.com/games/88518003689791/" target="_blank">
-<div class="icon"><i class="fas fa-fire"></i></div>
-<div class="name">BBQ It</div>
-<div class="desc">Fire up the grill, cook to perfection</div>
-<span class="status-tag status-working">Working</span>
-</a>
-</div>
-
-<div class="game-card" style="border-color:rgba(74,222,128,0.2);">
-<a href="https://www.roblox.com/games/101736964164901/" target="_blank">
-<div class="icon"><i class="fas fa-gamepad"></i></div>
-<div class="name">My Gaming Cafe!</div>
-<div class="desc">Run your own gaming cafe</div>
-<span class="status-tag status-working">Working</span>
-</a>
-</div>
-
-<div style="grid-column:1/-1;margin:8px 0 4px;"><span style="background:#3a2a1a;color:#fbbf24;padding:4px 14px;border-radius:12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Outdated</span></div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/131756752872026/" target="_blank">
-<div class="icon"><i class="fas fa-water"></i></div>
-<div class="name">Dive Down</div>
-<div class="desc">Explore the depths, collect treasure</div>
-<span class="status-tag status-outdated">Outdated</span>
-</a>
-</div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/71812071769179/" target="_blank">
-<div class="icon"><i class="fas fa-brain"></i></div>
-<div class="name">Escape Guards to steal Brainrot</div>
-<div class="desc">Sneak past guards, collect brainrot</div>
-<span class="status-tag status-outdated">Outdated</span>
-</a>
-</div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/120564326011184/" target="_blank">
-<div class="icon"><i class="fas fa-video"></i></div>
-<div class="name">Be a YouTuber</div>
-<div class="desc">Grow your channel, become famous</div>
-<span class="status-tag status-outdated">Outdated</span>
-</a>
-</div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/119987266683883/" target="_blank">
-<div class="icon"><i class="fas fa-volcano"></i></div>
-<div class="name">Survive Lava for Brainrots</div>
-<div class="desc">Avoid the rising lava, collect brainrots</div>
-<span class="status-tag status-outdated">Outdated</span>
-</a>
-</div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/106772177198260/" target="_blank">
-<div class="icon"><i class="fas fa-fish"></i></div>
-<div class="name">Reel a Brainrots</div>
-<div class="desc">Fish for rare brainrots</div>
-<span class="status-tag status-outdated">Outdated</span>
-</a>
-</div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/97365843755210/" target="_blank">
-<div class="icon"><i class="fas fa-leaf"></i></div>
-<div class="name">Cut Grass for Brainrots</div>
-<div class="desc">Mow lawns, earn brainrots</div>
-<span class="status-tag status-outdated">Outdated</span>
-</a>
-</div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/84644870163414/" target="_blank">
-<div class="icon"><i class="fas fa-dumbbell"></i></div>
-<div class="name">Get Strong for Brainrots</div>
-<div class="desc">Train hard, get buff, earn brainrots</div>
-<span class="status-tag status-outdated">Outdated</span>
-</a>
-</div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/92173115378522/" target="_blank">
-<div class="icon"><i class="fas fa-water"></i></div>
-<div class="name">Split the Sea</div>
-<div class="desc">Part the waters, discover secrets</div>
-<span class="status-tag status-outdated">Outdated</span>
-</a>
-</div>
-
-<div style="grid-column:1/-1;margin:8px 0 4px;"><span style="background:#3a1a1a;color:#f87171;padding:4px 14px;border-radius:12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Discontinued</span></div>
-
-<div class="game-card">
-<a href="https://www.roblox.com/games/107892466314467/" target="_blank">
-<div class="icon"><i class="fas fa-coins"></i></div>
-<div class="name">Grow a Crypto Farm</div>
-<div class="desc">Mine crypto, build your empire</div>
-<span class="status-tag status-discontinued">Discontinued</span>
-</a>
-</div>
-
-</div>
+<div class="games-grid" id="gamesGrid"></div>
 </div>
 
 <div class="cta-bar">
@@ -336,9 +228,74 @@ Dubu Hub &copy; 2025 &middot; <a href="https://dubuhub.vercel.app">dubuhub.verce
 </footer>
 </div>
 
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+<div class="modal" id="modalContent">
+<button class="modal-close" onclick="closeModal()">&times;</button>
+<img class="modal-img" id="modalImg" src="" alt="">
+<div class="modal-title" id="modalTitle">Game Name</div>
+<span class="modal-status" id="modalStatus">Working</span>
+<div class="modal-actions" id="modalActions">
+<a class="btn-play" id="modalPlayBtn" target="_blank"><i class="fas fa-rocket"></i> Play Game</a>
+<button class="btn-copy" onclick="copyGameScript()"><i class="fas fa-copy"></i> Copy Script</button>
+</div>
+<div class="modal-details" id="modalDetails">Loading...</div>
+</div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="api/games.js"></script>
 <script>
+// game data loaded from games.json + localStorage
+let gamesData = {};
+let top3Order = ['', '', ''];
+
+let currentGameKey = '';
+function openModal(key) {
+currentGameKey = key;
+const g = gamesData[key];
+if(!g) return;
+const els = document.querySelectorAll('.game-card, .top-card');
+let originX = 'center', originY = 'center';
+for(const el of els) {
+if(el.getAttribute('onclick') && el.getAttribute('onclick').includes("'"+key+"'")) {
+const r = el.getBoundingClientRect();
+originX = (r.left + r.width/2) + 'px';
+originY = (r.top + r.height/2) + 'px';
+break;
+}
+}
+const modal = document.getElementById('modalContent');
+modal.style.transformOrigin = originX + ' ' + originY;
+document.getElementById('modalTitle').textContent = g.name;
+const st = document.getElementById('modalStatus');
+st.textContent = g.status;
+st.className = 'modal-status '+g.statusClass;
+document.getElementById('modalPlayBtn').href = 'https://www.roblox.com/games/'+g.gameId+'/';
+document.getElementById('modalDetails').innerHTML = g.details;
+document.getElementById('modalImg').src = g.img || '';
+document.body.style.overflow = 'hidden';
+document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal() {
+document.getElementById('modalOverlay').classList.remove('show');
+document.body.style.overflow = '';
+}
+function copyGameScript() {
+const g = gamesData[currentGameKey];
+if(!g) return;
+const text = 'loadstring(game:HttpGet("https://dubuhub.vercel.app/loader.lua"))()';
+navigator.clipboard.writeText(text).then(()=>{
+showToast('Script copied! Paste in your executor');
+}).catch(()=>{
+const ta = document.createElement('textarea');
+ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+showToast('Script copied! Paste in your executor');
+});
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
+
 // live user counter
 let currentUsers = Math.floor(Math.random() * 60) + 40;
 const userEl = document.getElementById('liveUsers');
@@ -349,7 +306,6 @@ currentUsers = Math.max(10, Math.min(150, currentUsers + change));
 if (userEl) userEl.textContent = currentUsers;
 }
 setInterval(updateUsers, 3000);
-// occasional spike up
 setInterval(function() {
 const spike = Math.floor(Math.random() * 10) + 3;
 currentUsers = Math.min(150, currentUsers + spike);
@@ -358,10 +314,95 @@ if (userEl) userEl.textContent = currentUsers;
 
 async function copyLoadstring() {
 const text = 'loadstring(game:HttpGet("https://dubuhub.vercel.app/loader.lua"))()';
-try { await navigator.clipboard.writeText(text); showToast('Copied!'); }
-catch { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('Copied!'); }
+try { await navigator.clipboard.writeText(text); showToast('Loadstring copied!'); }
+catch { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast('Loadstring copied!'); }
 }
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show'; setTimeout(function(){t.classList.remove('show')},2500); }
+
+function renderHomePage() {
+const keys = Object.keys(gamesData);
+// Render top 3 using top3Order loaded earlier
+var topKeys = [];
+for(var i = 0; i < 3; i++) {
+if(top3Order[i] && gamesData[top3Order[i]]) topKeys.push(top3Order[i]);
+}
+// If no top3 set, use first 3 keys
+if(topKeys.length === 0) {
+topKeys = keys.slice(0, 3);
+}
+// render top 3
+const topDiv = document.getElementById('topGames');
+topDiv.innerHTML = topKeys.map(function(k,i) {
+var g = gamesData[k];
+if(!g.statusClass) g.statusClass = 'status-' + (g.status || 'working').toLowerCase();
+if(!g.icon) g.icon = 'fa-gamepad';
+var href = 'https://www.roblox.com/games/'+g.gameId+'/';
+var thumb = g.img ? g.img.replace('768/432','150/150') : '';
+var medals = ['#1', '#2', '#3'];
+return '<div class="top-card" onclick="openModal(\''+k+'\')">'
++'<div class="rank">'+medals[i]+'</div>'
++'<div class="icon"><img src="'+escHtml(thumb)+'" alt="'+escHtml(g.name)+'"></div>'
++'<div class="name">'+escHtml(g.name)+'</div>'
++'<div class="desc">'+escHtml(g.desc)+'</div>'
++'<a href="'+href+'" class="play-btn" target="_blank">Play</a>'
++'</div>';
+}).join('');
+// render grid grouped by status
+var groups = { Working:[], Outdated:[], Discontinued:[] };
+keys.forEach(function(k) {
+var g = gamesData[k];
+if(groups[g.status]) groups[g.status].push(k);
+});
+// Sort within each group alphabetically
+for(var st in groups) {
+groups[st].sort(function(a,b) {
+return (gamesData[a].name || '').localeCompare(gamesData[b].name || '');
+});
+}
+var statusLabels = { Working:'Working &amp; Updated', Outdated:'Outdated', Discontinued:'Discontinued' };
+var statusColors = { Working:'#1a3a1a;color:#4ade80', Outdated:'#3a2a1a;color:#fbbf24', Discontinued:'#3a1a1a;color:#f87171' };
+var statusBorders = { Working:'rgba(74,222,128,0.2)', Outdated:'', Discontinued:'' };
+var html = '';
+['Working','Outdated','Discontinued'].forEach(function(st) {
+if(groups[st].length === 0) return;
+html += '<div style="grid-column:1/-1;margin:8px 0 4px 0"><span style="background:'+statusColors[st]+';padding:4px 14px;border-radius:12px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;">'+statusLabels[st]+'</span></div>';
+groups[st].forEach(function(k) {
+var g = gamesData[k];
+if(!g.statusClass) g.statusClass = 'status-' + (g.status || 'working').toLowerCase();
+if(!g.icon) g.icon = 'fa-gamepad';
+var href = 'https://www.roblox.com/games/'+g.gameId+'/';
+var thumb = g.img ? g.img.replace('768/432','150/150') : '';
+var borderStyle = statusBorders[st] ? ' style="border-color:'+statusBorders[st]+'"' : '';
+html += '<div class="game-card"'+borderStyle+' onclick="openModal(\''+k+'\')">'
++'<a href="'+href+'" target="_blank">'
++'<div class="card-top">'
++'<div class="icon"><img src="'+escHtml(thumb)+'" alt="'+escHtml(g.name)+'"></div>'
++'<div class="card-body">'
++'<div class="name">'+escHtml(g.name)+'</div>'
++'<div class="desc">'+escHtml(g.desc)+'</div>'
++'<span class="status-tag '+g.statusClass+'">'+g.status+'</span>'
++'</div>'
++'</div>'
++'</a>'
++'</div>';
+});
+});
+document.getElementById('gamesGrid').innerHTML = html;
+}
+function escHtml(s) {
+if(!s) return '';
+return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// init render
+loadGamesData().then(function(data) {
+gamesData = data;
+// Load top3
+loadTop3Data().then(function(arr) {
+top3Order = arr;
+renderHomePage();
+});
+});
 </script>
 </body>
 </html>

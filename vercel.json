@@ -1,9 +1,20 @@
 {
+  "functions": {
+    "api/fetch-game.php": {
+      "runtime": "vercel-php@0.7.0"
+    }
+  },
   "rewrites": [
+    { "source": "/api/fetch-game", "destination": "/api/fetch-game.php" },
+    { "source": "/api/verify-admin", "destination": "/api/verify-admin.php" },
+    { "source": "/api/generate-details", "destination": "/api/generate-details.php" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/paste", "destination": "/paste.html" },
     { "source": "/obfuscator", "destination": "/obfuscator.html" },
     { "source": "/loader.lua", "destination": "/api/loader" },
+    { "source": "/admin-panel", "destination": "/admin.html" },
+    { "source": "/admin-login", "destination": "/admin-login.html" },
     { "source": "/:id", "destination": "/api/paste?id=:id" }
   ]
 }
+
