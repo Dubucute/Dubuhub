@@ -192,8 +192,8 @@ footer a:hover{text-decoration:underline}
 </div>
 
 <div class="stats-row">
-<div class="stat-item"><div class="num">12</div><div class="label">Supported Games</div></div>
-<div class="stat-item"><div class="num">3</div><div class="label">Working Now</div></div>
+<div class="stat-item"><div class="num" id="totalGames">0</div><div class="label">Supported Games</div></div>
+<div class="stat-item"><div class="num" id="workingGames">0</div><div class="label">Working Now</div></div>
 <div class="stat-item"><div class="num" id="liveUsers">0</div><div class="label">Live Users</div></div>
 </div>
 
@@ -321,6 +321,12 @@ function showToast(msg) { const t = document.getElementById('toast'); t.textCont
 
 function renderHomePage() {
 const keys = Object.keys(gamesData);
+
+// Update stats
+document.getElementById('totalGames').textContent = keys.length;
+var workingCount = keys.filter(function(k) { return gamesData[k].status === 'Working'; }).length;
+document.getElementById('workingGames').textContent = workingCount;
+
 // Render top 3 using top3Order loaded earlier
 var topKeys = [];
 for(var i = 0; i < 3; i++) {
