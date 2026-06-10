@@ -205,13 +205,21 @@ export default async function handler(req, res) {
       });
     }
 
-    let pasteData = store.get(id);
+    let pasteData = null;
 
-    if (!pasteData && isUsingKV) {
+    // Check KV first (persistent) since serverless instances lose memory
+    if (isUsingKV) {
       try {
         const raw = await client.get(id);
-        if (raw) pasteData = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        if (raw) {
+          pasteData = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        }
       } catch {}
+    }
+
+    // Fallback to in-memory store
+    if (!pasteData) {
+      pasteData = store.get(id);
     }
 
     // Expired check
@@ -273,12 +281,13 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, message: 'Paste deleted' });
   }
 
-  // ==================== PATCH - Update Expiration ====================
+  // ==================== PATCH - Update Paste (content + expiration) ====================
   if (req.method === 'PATCH') {
     const id = req.query.id;
     if (!id) return res.status(400).json({ error: 'ID is required' });
 
     const expires = req.body?.expires;
+    const content = req.body?.content;
 
     let pasteData = store.get(id);
     if (!pasteData && isUsingKV) {
@@ -290,20 +299,34 @@ export default async function handler(req, res) {
 
     if (!pasteData) return res.status(404).json({ error: 'Paste not found' });
 
-    if (expires === null || expires === 'never') {
-      // No expiration
-      pasteData.expiresAt = null;
-    } else if (typeof expires === 'number') {
-      pasteData.expiresAt = expires;
-    } else if (typeof expires === 'string') {
-      const match = expires.match(/^(\d+)\s*(m|h|d|w)$/);
-      if (match) {
-        const num = parseInt(match[1]);
-        const unit = match[2];
-        const multipliers = { m: 60000, h: 3600000, d: 86400000, w: 604800000 };
-        pasteData.expiresAt = Date.now() + num * (multipliers[unit] || 86400000);
-      }
+    let updated = false;
+
+    // Update content if provided
+    if (content !== undefined && content !== null) {
+      pasteData.content = content;
+      pasteData.length = content.length;
+      updated = true;
     }
+
+    // Update expiration if provided
+    if (expires !== undefined) {
+      if (expires === null || expires === 'never') {
+        pasteData.expiresAt = null;
+      } else if (typeof expires === 'number') {
+        pasteData.expiresAt = expires;
+      } else if (typeof expires === 'string') {
+        const match = expires.match(/^(\d+)\s*(m|h|d|w)$/);
+        if (match) {
+          const num = parseInt(match[1]);
+          const unit = match[2];
+          const multipliers = { m: 60000, h: 3600000, d: 86400000, w: 604800000 };
+          pasteData.expiresAt = Date.now() + num * (multipliers[unit] || 86400000);
+        }
+      }
+      updated = true;
+    }
+
+    if (!updated) return res.status(400).json({ error: 'No updates provided' });
 
     store.set(id, pasteData);
     if (isUsingKV) {
@@ -322,7 +345,8 @@ export default async function handler(req, res) {
       success: true,
       id,
       expiresAt: pasteData.expiresAt,
-      message: pasteData.expiresAt ? 'Expiration set' : 'No expiration (permanent)',
+      length: pasteData.length,
+      message: content !== undefined ? 'Content updated' : (pasteData.expiresAt ? 'Expiration set' : 'No expiration (permanent)'),
     });
   }
 

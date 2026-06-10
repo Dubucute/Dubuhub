@@ -286,32 +286,37 @@ syncToServer();
 }
 
 function syncToServer() {
-// Sync games to paste API
-fetch('/api/paste', {
-method: 'POST',
-headers: {'Content-Type': 'application/json'},
-body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
-}).then(function(res) {
-if (!res.ok && res.status === 409) {
-// ID exists, delete and recreate
-fetch('/api/paste?id=' + GAMES_PASTE_ID, {method: 'DELETE'}).then(function() {
-return fetch('/api/paste', {
-method: 'POST',
-headers: {'Content-Type': 'application/json'},
-body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
-});
-}).catch(function(){});
-}
-}).catch(function(err) {
-// Network error - try delete + recreate
-fetch('/api/paste?id=' + GAMES_PASTE_ID, {method: 'DELETE'}).then(function() {
-return fetch('/api/paste', {
-method: 'POST',
-headers: {'Content-Type': 'application/json'},
-body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
-});
-}).catch(function(){});
-});
+  // Use PATCH to update content in-place (no delete+recreate race condition)
+  fetch('/api/paste?id=' + GAMES_PASTE_ID, {
+    method: 'PATCH',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({content: JSON.stringify(gamesData)})
+  }).then(function(res) {
+    if (!res.ok) {
+      // Paste doesn't exist yet, create it
+      fetch('/api/paste', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
+      }).catch(function(){});
+    }
+  }).catch(function() {
+    // Network error - keep trying with POST
+    fetch('/api/paste', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id: GAMES_PASTE_ID, content: JSON.stringify(gamesData)})
+    }).then(function(res) {
+      if (!res.ok && res.status === 409) {
+        // ID exists, update via PATCH
+        return fetch('/api/paste?id=' + GAMES_PASTE_ID, {
+          method: 'PATCH',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({content: JSON.stringify(gamesData)})
+        });
+      }
+    });
+  });
 }
 
 function syncFromFile() {
@@ -643,28 +648,32 @@ saveTop3();
 
 function saveTop3() {
 try { localStorage.setItem('dubuhub_top3', JSON.stringify(top3Keys)); } catch(e) {}
-// Sync top3 to paste API for all visitors
+// Sync top3 to paste API for all visitors using PATCH (no delete+recreate)
+fetch('/api/paste?id=' + TOP3_PASTE_ID, {
+method: 'PATCH',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({content: JSON.stringify({top3: top3Keys})})
+}).then(function(res) {
+if (!res.ok) {
+fetch('/api/paste', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
+}).catch(function(){});
+}
+}).catch(function() {
 fetch('/api/paste', {
 method: 'POST',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
 }).then(function(res) {
 if (!res.ok && res.status === 409) {
-fetch('/api/paste?id=' + TOP3_PASTE_ID, {method: 'DELETE'}).then(function() {
-return fetch('/api/paste', {
-method: 'POST',
+return fetch('/api/paste?id=' + TOP3_PASTE_ID, {
+method: 'PATCH',
 headers: {'Content-Type': 'application/json'},
-body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
+body: JSON.stringify({content: JSON.stringify({top3: top3Keys})})
 });
-}).catch(function(){});
 }
-}).catch(function(err) {
-fetch('/api/paste?id=' + TOP3_PASTE_ID, {method: 'DELETE'}).then(function() {
-return fetch('/api/paste', {
-method: 'POST',
-headers: {'Content-Type': 'application/json'},
-body: JSON.stringify({id: TOP3_PASTE_ID, content: JSON.stringify({top3: top3Keys})})
-});
 }).catch(function(){});
 });
 }

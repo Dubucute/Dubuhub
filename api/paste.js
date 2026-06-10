@@ -205,13 +205,21 @@ export default async function handler(req, res) {
       });
     }
 
-    let pasteData = store.get(id);
+    let pasteData = null;
 
-    if (!pasteData && isUsingKV) {
+    // Check KV first (persistent) since serverless instances lose memory
+    if (isUsingKV) {
       try {
         const raw = await client.get(id);
-        if (raw) pasteData = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        if (raw) {
+          pasteData = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        }
       } catch {}
+    }
+
+    // Fallback to in-memory store
+    if (!pasteData) {
+      pasteData = store.get(id);
     }
 
     // Expired check
