@@ -74,9 +74,11 @@ input:focus,select:focus{border-color:#58a6ff}
 .toast.error{background:#da3633}
 .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
-.modal{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto}
+.modal{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;max-width:700px;width:90%;max-height:80vh;overflow-y:auto}
 .modal h3{color:#c9d1d9;margin-bottom:16px}
 .modal .btn-group{justify-content:flex-end}
+.edit-textarea{width:100%;height:350px;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#c9d1d9;padding:16px;font-family:"Courier New",monospace;font-size:14px;resize:vertical;outline:none;margin-bottom:16px}
+.edit-textarea:focus{border-color:#58a6ff}
 .footer{margin-top:16px;text-align:center;color:#484f58;font-size:0.85rem}
 </style>
 </head>
@@ -249,7 +251,7 @@ function renderPasteList(pastes) {
     var p = pastes[i];
     var expired = p.expiresAt && Date.now() > p.expiresAt;
     var expLabel = expired ? '<span class="expiry-badge expiry-expired">Expired</span>' : (p.expiresAt ? '<span class="expiry-badge expiry-limited">Expires ' + timeAgo(p.expiresAt) + '</span>' : '<span class="expiry-badge expiry-permanent">Permanent</span>');
-    html += '<div class="paste-item"><div class="top"><div class="info"><div class="name" onclick="copyText(\'https://dubuhub.vercel.app/' + p.id + '\',\'URL copied!\')">' + p.id + '</div><div class="meta"><span>Created ' + timeAgo(p.createdAt) + '</span><span>' + (p.length || 0) + ' bytes</span>' + expLabel + '</div><div class="preview">' + escapeHtml(p.preview || "") + '</div></div><div class="actions"><button class="btn btn-sm btn-secondary" onclick="copyText(\'https://dubuhub.vercel.app/' + p.id + '\',\'URL copied!\')">Copy URL</button><button class="btn btn-sm btn-secondary" onclick="showExpiryModal(\'' + p.id + '\')">Expiry</button><button class="btn btn-sm btn-danger" onclick="confirmDelete(\'' + p.id + '\')">Delete</button></div></div></div>';
+    html += '<div class="paste-item"><div class="top"><div class="info"><div class="name" onclick="copyText(\'https://dubuhub.vercel.app/' + p.id + '\',\'URL copied!\')">' + p.id + '</div><div class="meta"><span>Created ' + timeAgo(p.createdAt) + '</span><span>' + (p.length || 0) + ' bytes</span>' + expLabel + '</div><div class="preview">' + escapeHtml(p.preview || "") + '</div></div><div class="actions"><button class="btn btn-sm btn-secondary" onclick="copyText(\'https://dubuhub.vercel.app/' + p.id + '\',\'URL copied!\')">Copy URL</button><button class="btn btn-sm btn-secondary" onclick="showEditModal(\'' + p.id + '\')">Edit</button><button class="btn btn-sm btn-secondary" onclick="showExpiryModal(\'' + p.id + '\')">Expiry</button><button class="btn btn-sm btn-danger" onclick="confirmDelete(\'' + p.id + '\')">Delete</button></div></div></div>';
   }
   c.innerHTML = html;
 }
@@ -303,6 +305,41 @@ async function updateExpiry(id) {
     loadPastes();
   } catch (e) {
     showToast("Error: " + e.message, true);
+  }
+}
+
+async function showEditModal(id) {
+  showModal("Editing: " + id, '<p style="color:#8b949e;margin-bottom:4px;">Edit the paste content below.</p><div id="editLoading" style="text-align:center;padding:40px;color:#8b949e;"><i class="fas fa-spinner fa-spin"></i> Loading content...</div><textarea class="edit-textarea" id="editContentArea" style="display:none;"></textarea><div class="btn-group" id="editBtnGroup" style="display:none;"><button class="btn btn-sm btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-sm" onclick="saveContent(\'' + id + '\')">Save Changes</button></div>');
+  try {
+    var res = await fetch("/api/paste?id=" + id + "&raw=true");
+    if (!res.ok) throw new Error("Failed to load");
+    var text = await res.text();
+    document.getElementById("editLoading").style.display = "none";
+    var ta = document.getElementById("editContentArea");
+    ta.style.display = "block";
+    ta.value = text;
+    document.getElementById("editBtnGroup").style.display = "flex";
+  } catch (e) {
+    document.getElementById("editLoading").innerHTML = '<p style="color:#f85149;">Error loading: ' + e.message + '</p>';
+  }
+}
+
+async function saveContent(id) {
+  var content = document.getElementById("editContentArea").value;
+  var btns = document.querySelectorAll("#editBtnGroup button");
+  btns[1].disabled = true;
+  btns[1].textContent = "Saving...";
+  try {
+    var res = await fetch("/api/paste?id=" + id, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: content }) });
+    var d = await res.json();
+    if (!res.ok) { throw new Error(d.error); }
+    showToast("Saved! " + (d.length || content.length) + " bytes");
+    closeModal();
+    loadPastes();
+  } catch (e) {
+    showToast("Error: " + e.message, true);
+    btns[1].disabled = false;
+    btns[1].textContent = "Save Changes";
   }
 }
 
@@ -375,7 +412,7 @@ function renderAdmin(pastes) {
     var p = filtered[i];
     var expired = p.expiresAt && Date.now() > p.expiresAt;
     var expLabel = expired ? '<span class="expiry-badge expiry-expired">Expired</span>' : (p.expiresAt ? '<span class="expiry-badge expiry-limited">' + timeAgo(p.expiresAt) + '</span>' : '<span class="expiry-badge expiry-permanent">Permanent</span>');
-    html += '<div class="paste-item"><div class="top"><div class="info"><div class="name">' + p.id + '</div><div class="meta"><span>Created ' + timeAgo(p.createdAt) + '</span><span>' + (p.length || 0) + ' bytes</span>' + expLabel + '</div><div class="preview">' + escapeHtml((p.preview || "").substring(0, 120)) + '</div></div><div class="actions"><button class="btn btn-sm btn-secondary" onclick="copyText(\'https://dubuhub.vercel.app/' + p.id + '\',\'URL copied!\')">URL</button><button class="btn btn-sm btn-secondary" onclick="showExpiryModal(\'' + p.id + '\')">Expiry</button><button class="btn btn-sm btn-danger" onclick="confirmDelete(\'' + p.id + '\')">Delete</button></div></div></div>';
+    html += '<div class="paste-item"><div class="top"><div class="info"><div class="name">' + p.id + '</div><div class="meta"><span>Created ' + timeAgo(p.createdAt) + '</span><span>' + (p.length || 0) + ' bytes</span>' + expLabel + '</div><div class="preview">' + escapeHtml((p.preview || "").substring(0, 120)) + '</div></div><div class="actions"><button class="btn btn-sm btn-secondary" onclick="copyText(\'https://dubuhub.vercel.app/' + p.id + '\',\'URL copied!\')">URL</button><button class="btn btn-sm btn-secondary" onclick="showEditModal(\'' + p.id + '\')">Edit</button><button class="btn btn-sm btn-secondary" onclick="showExpiryModal(\'' + p.id + '\')">Expiry</button><button class="btn btn-sm btn-danger" onclick="confirmDelete(\'' + p.id + '\')">Delete</button></div></div></div>';
   }
   cl.innerHTML = html;
 }
