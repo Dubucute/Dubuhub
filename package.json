@@ -6,6 +6,6 @@
     "vercel-build": "echo build complete"
   },
   "dependencies": {
-    "@vercel/kv": "^2.0.0"
+    "redis": "^4.7.1"
   }
 }

@@ -11,17 +11,13 @@ let kv = null;
 
 async function getKV() {
   if (kv) return kv;
-  // Support both default and custom-prefixed env vars (e.g., STORAGE_ prefix)
-  const kvUrl = process.env.KV_URL || process.env.STORAGE_URL || process.env.STORAGE_REDIS_URL;
-  const kvToken = process.env.KV_REST_API_TOKEN || process.env.STORAGE_REST_API_TOKEN || process.env.STORAGE_REDIS_TOKEN;
-  const kvRestUrl = process.env.KV_REST_API_URL || process.env.STORAGE_REST_API_URL || process.env.STORAGE_REDIS_API_URL;
-  if (kvUrl || (kvRestUrl && kvToken)) {
+  const redisUrl = process.env.STORAGE_REDIS_URL || process.env.KV_URL;
+  if (redisUrl) {
     try {
-      const { createClient } = await import('@vercel/kv');
-      kv = createClient({
-        url: kvRestUrl || kvUrl,
-        token: kvToken
-      });
+      const { createClient } = await import('redis');
+      kv = createClient({ url: redisUrl });
+      kv.on('error', () => {});
+      await kv.connect();
       return kv;
     } catch { return null; }
   }

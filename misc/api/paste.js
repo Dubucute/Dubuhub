@@ -11,10 +11,13 @@ let kv = null;
 
 async function getKV() {
   if (kv) return kv;
-  if (process.env.KV_URL) {
+  const redisUrl = process.env.STORAGE_REDIS_URL || process.env.KV_URL;
+  if (redisUrl) {
     try {
-      const { createClient } = await import('@vercel/kv');
-      kv = createClient({ url: process.env.KV_URL, token: process.env.KV_TOKEN });
+      const { createClient } = await import('redis');
+      kv = createClient({ url: redisUrl });
+      kv.on('error', () => {});
+      await kv.connect();
       return kv;
     } catch { return null; }
   }
