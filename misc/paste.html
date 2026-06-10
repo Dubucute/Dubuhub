@@ -89,7 +89,6 @@ input:focus,select:focus{border-color:#58a6ff}
 <h1>Dubuhub Paste <span style="font-size:0.9rem;color:#8b949e;font-weight:400;">/ admin</span></h1>
 <div class="tabs">
 <button class="active" onclick="switchTab('create')" id="tabCreateBtn">Create</button>
-<button onclick="switchTab('list')" id="tabListBtn">Manage</button>
 <button class="admin-tab" onclick="switchTab('admin')" id="tabAdminBtn">Admin</button>
 </div>
 </div>
@@ -179,16 +178,15 @@ input:focus,select:focus{border-color:#58a6ff}
 <script>
 let currentPage = 1;
 let totalPastes = 0;
-const ADMIN_PASSWORD = "@Dubu123";
 let adminUnlocked = false;
 
 function switchTab(tab) {
   document.querySelectorAll(".tab-content").forEach(function(el) { el.classList.remove("active"); });
   document.querySelectorAll(".tabs button").forEach(function(el) { el.classList.remove("active"); });
+  if (tab === "list") tab = "admin"; // Redirect Manage to Admin
   var tabId = "tab" + tab.charAt(0).toUpperCase() + tab.slice(1);
   document.getElementById(tabId).classList.add("active");
   document.getElementById(tabId + "Btn").classList.add("active");
-  if (tab === "list") { loadPastes(); }
   if (tab === "admin" && adminUnlocked) { adminRefresh(); }
 }
 
@@ -343,16 +341,32 @@ async function saveContent(id) {
   }
 }
 
-function unlockAdmin() {
+async function unlockAdmin() {
   var pw = document.getElementById("adminPasswordInput").value;
-  if (pw === ADMIN_PASSWORD) {
-    adminUnlocked = true;
-    document.getElementById("adminLock").style.display = "none";
-    document.getElementById("adminPanel").style.display = "block";
-    adminRefresh();
-    showToast("Admin unlocked!");
-  } else {
-    showToast("Wrong password", true);
+  var btn = document.querySelector("#adminLock button");
+  btn.disabled = true;
+  btn.textContent = "Verifying...";
+  try {
+    var res = await fetch("/api/verify-admin", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({password: pw})
+    });
+    if (res.ok) {
+      adminUnlocked = true;
+      document.getElementById("adminLock").style.display = "none";
+      document.getElementById("adminPanel").style.display = "block";
+      adminRefresh();
+      showToast("Admin unlocked!");
+    } else {
+      showToast("Wrong password", true);
+      btn.disabled = false;
+      btn.textContent = "Unlock";
+    }
+  } catch(e) {
+    showToast("Server error", true);
+    btn.disabled = false;
+    btn.textContent = "Unlock";
   }
 }
 
