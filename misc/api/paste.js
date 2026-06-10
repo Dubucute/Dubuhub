@@ -136,7 +136,16 @@ export default async function handler(req, res) {
         try {
           // Get paste list from Redis (simple JSON array)
           const indexRaw = await client.get('pastes:list');
-          const allIds = indexRaw ? JSON.parse(indexRaw) : [];
+          let allIds = indexRaw ? JSON.parse(indexRaw) : [];
+
+          // Fallback: if index is empty, scan Redis for existing paste keys
+          if (allIds.length === 0) {
+            try {
+              const allKeys = await client.keys('*');
+              allIds = allKeys.filter(k => k !== 'pastes:list');
+            } catch {}
+          }
+
           // Reverse so newest first
           const ids = allIds.reverse();
           const total = ids.length;

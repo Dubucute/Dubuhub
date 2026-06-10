@@ -98,7 +98,7 @@ export default async function handler(req, res) {
           const ttl = Math.ceil((expiresAt - Date.now()) / 1000);
           if (ttl > 0) await client.expire(id, ttl);
         }
-        // Add to index list (simple JSON array approach, reliable with raw redis pkg)
+        // Add to index list (simple JSON array, works with raw redis npm pkg)
         const indexRaw = await client.get('pastes:list');
         const index = indexRaw ? JSON.parse(indexRaw) : [];
         if (!index.includes(id)) {
@@ -136,7 +136,16 @@ export default async function handler(req, res) {
         try {
           // Get paste list from Redis (simple JSON array)
           const indexRaw = await client.get('pastes:list');
-          const allIds = indexRaw ? JSON.parse(indexRaw) : [];
+          let allIds = indexRaw ? JSON.parse(indexRaw) : [];
+
+          // Fallback: if index is empty, scan Redis for existing paste keys
+          if (allIds.length === 0) {
+            try {
+              const allKeys = await client.keys('*');
+              allIds = allKeys.filter(k => k !== 'pastes:list');
+            } catch {}
+          }
+
           // Newest first (reverse)
           const ids = allIds.reverse();
           const total = ids.length;
