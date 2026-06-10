@@ -227,22 +227,27 @@ export default async function handler(req, res) {
       return res.status(404).send('Paste not found');
     }
 
-    // Block browser access - only allow Roblox executors / non-browser clients
-    const ua = (req.headers['user-agent'] || '').toLowerCase();
-    const isBrowser =
-      ua.includes('mozilla') ||
-      ua.includes('chrome') ||
-      ua.includes('safari') ||
-      ua.includes('firefox') ||
-      ua.includes('edge') ||
-      ua.includes('opera') ||
-      ua.includes('msie') ||
-      ua.includes('trident');
+    // Allow ?raw=true to bypass browser block (for internal config / admin access)
+    const rawBypass = req.query.raw === 'true' || req.query.raw === '1';
 
-    if (isBrowser) {
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      res.setHeader('Cache-Control', 'no-store');
-      return res.status(200).send(getBlockPage(id));
+    if (!rawBypass) {
+      // Block browser access - only allow Roblox executors / non-browser clients
+      const ua = (req.headers['user-agent'] || '').toLowerCase();
+      const isBrowser =
+        ua.includes('mozilla') ||
+        ua.includes('chrome') ||
+        ua.includes('safari') ||
+        ua.includes('firefox') ||
+        ua.includes('edge') ||
+        ua.includes('opera') ||
+        ua.includes('msie') ||
+        ua.includes('trident');
+
+      if (isBrowser) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-store');
+        return res.status(200).send(getBlockPage(id));
+      }
     }
 
     // Return raw content for loadstring (Roblox executors)

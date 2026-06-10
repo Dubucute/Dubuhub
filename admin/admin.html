@@ -127,8 +127,8 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100
 <button class="btn btn-secondary" onclick="saveToGamesJson()" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-save"></i> Save games.json</button>
 <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-file-import"></i> Load games.json</button>
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
-<button class="btn btn-secondary" onclick="window.open('/api/paste?id=' + GAMES_PASTE_ID, '_blank')" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-database"></i> View Games</button>
-<button class="btn btn-secondary" onclick="window.open('/api/paste?id=' + TOP3_PASTE_ID, '_blank')" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-database"></i> View Top3</button>
+<button class="btn btn-secondary" onclick="window.open('/api/paste?id=' + GAMES_PASTE_ID + '&raw=true', '_blank')" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-database"></i> View Games</button>
+<button class="btn btn-secondary" onclick="window.open('/api/paste?id=' + TOP3_PASTE_ID + '&raw=true', '_blank')" style="padding:8px 16px;font-size:.8rem"><i class="fas fa-database"></i> View Top3</button>
 <button class="btn btn-secondary" onclick="syncFromFile()" style="padding:8px 16px;font-size:.8rem;border-color:rgba(100,200,255,0.25);color:#60a5fa"><i class="fas fa-cloud-upload-alt"></i> Sync File &rarr; Server</button>
 </div>
 </div>

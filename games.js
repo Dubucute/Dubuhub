@@ -11,7 +11,7 @@ async function loadGamesData() {
 
   // Try the paste API first (persistent server-side storage - synced across all users)
   try {
-    var res = await fetch('/api/paste?id=' + GAMES_PASTE_ID);
+    var res = await fetch('/api/paste?id=' + GAMES_PASTE_ID + '&raw=true');
     if (res.ok) {
       var text = await res.text();
       try {
@@ -52,7 +52,7 @@ async function loadGamesData() {
 async function loadTop3Data() {
   // Try the paste API first (persistent server-side storage - synced across all users)
   try {
-    var res = await fetch('/api/paste?id=' + TOP3_PASTE_ID);
+    var res = await fetch('/api/paste?id=' + TOP3_PASTE_ID + '&raw=true');
     if (res.ok) {
       var text = await res.text();
       try {
