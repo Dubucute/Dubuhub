@@ -11,10 +11,17 @@ let kv = null;
 
 async function getKV() {
   if (kv) return kv;
-  if (process.env.KV_URL) {
+  // Support both default and custom-prefixed env vars (e.g., STORAGE_ prefix)
+  const kvUrl = process.env.KV_URL || process.env.STORAGE_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN || process.env.STORAGE_REST_API_TOKEN;
+  const kvRestUrl = process.env.KV_REST_API_URL || process.env.STORAGE_REST_API_URL;
+  if (kvUrl || (kvRestUrl && kvToken)) {
     try {
       const { createClient } = await import('@vercel/kv');
-      kv = createClient({ url: process.env.KV_URL, token: process.env.KV_TOKEN });
+      kv = createClient({
+        url: kvRestUrl || kvUrl,
+        token: kvToken
+      });
       return kv;
     } catch { return null; }
   }
