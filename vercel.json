@@ -1,0 +1,25 @@
+{
+  "functions": {
+    "api/verify-admin.php": {
+      "runtime": "vercel-php@0.9.0"
+    },
+    "api/fetch-game.php": {
+      "runtime": "vercel-php@0.9.0"
+    },
+    "api/generate-details.php": {
+      "runtime": "vercel-php@0.9.0"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/verify-admin", "destination": "/api/verify-admin.php" },
+    { "source": "/api/fetch-game", "destination": "/api/fetch-game.php" },
+    { "source": "/api/generate-details", "destination": "/api/generate-details.php" },
+    { "source": "/api/obfuscate", "destination": "/misc/api/obfuscate" },
+    { "source": "/paste", "destination": "/misc/paste.html" },
+    { "source": "/obfuscator", "destination": "/misc/obfuscator.html" },
+    { "source": "/loader.lua", "destination": "/api/loader" },
+    { "source": "/admin-panel", "destination": "/admin/admin.html" },
+    { "source": "/admin-login", "destination": "/admin/admin-login.html" },
+    { "source": "/:id", "destination": "/api/paste?id=:id" }
+  ]
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DubuHub - Admin Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bg-grid{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(255,20,147,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,20,147,0.03) 1px,transparent 1px);background-size:60px 60px;z-index:0;pointer-events:none}
+.bg-glow{position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(255,20,147,0.12) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(255,105,180,0.08) 0%,transparent 50%);z-index:0;pointer-events:none;animation:pulseGlow 8s ease-in-out infinite alternate}
+@keyframes pulseGlow{0%{transform:scale(1) rotate(0deg);opacity:.6}100%{transform:scale(1.2) rotate(5deg);opacity:1}}
+.login-box{position:relative;z-index:1;background:rgba(255,255,255,0.02);border:1px solid rgba(255,20,147,0.15);border-radius:20px;padding:40px;width:380px;max-width:90vw;text-align:center}
+.login-box .lock-icon{font-size:2.5rem;color:#ff69b4;margin-bottom:16px;opacity:.8}
+.login-box h1{font-size:1.5rem;font-weight:900;margin-bottom:4px}
+.login-box .sub{color:#666;font-size:.85rem;margin-bottom:28px}
+.input-group{text-align:left;margin-bottom:20px}
+.input-group label{font-size:.75rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
+.input-group .input-wrap{position:relative}
+.input-group input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 14px 14px 44px;color:#fff;font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s}
+.input-group input:focus{border-color:rgba(255,20,147,0.4)}
+.input-group .input-wrap i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#444;font-size:.9rem}
+.login-btn{width:100%;background:linear-gradient(135deg,#ff1493,#ff69b4);color:#fff;border:none;padding:14px;border-radius:10px;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .3s;font-family:'Inter',sans-serif}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 4px 25px rgba(255,20,147,0.4)}
+.error{color:#f87171;font-size:.8rem;margin-top:12px;display:none}
+.brand{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:1;font-size:1.2rem;font-weight:900;background:linear-gradient(135deg,#ff1493,#ff69b4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="brand">DubuHub Admin</div>
+<div class="login-box">
+<div class="lock-icon"><i class="fas fa-lock"></i></div>
+<h1>Admin Access</h1>
+<p class="sub">Enter password to manage games</p>
+<div class="input-group">
+<label>Password</label>
+<div class="input-wrap">
+<i class="fas fa-key"></i>
+<input type="password" id="passwordInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+</div>
+</div>
+<button class="login-btn" onclick="doLogin()"><i class="fas fa-arrow-right-to-bracket"></i> Login</button>
+<div class="error" id="errorMsg"><i class="fas fa-exclamation-circle"></i> Incorrect password</div>
+</div>
+<script>
+function doLogin() {
+var pw = document.getElementById('passwordInput').value;
+var btn = document.querySelector('.login-btn');
+btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+btn.disabled = true;
+fetch('/api/verify-admin', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({password: pw})
+}).then(function(res) {
+if(res.ok) {
+return res.json().then(function(data) {
+try {
+localStorage.setItem('dubuhub_admin_session', '1');
+sessionStorage.setItem('dubuhub_admin_session', '1');
+} catch(e) {}
+window.location.href = '/admin-panel';
+});
+} else {
+throw new Error('Invalid password');
+}
+}).catch(function() {
+document.getElementById('errorMsg').style.display = 'block';
+document.getElementById('passwordInput').value = '';
+document.getElementById('passwordInput').focus();
+btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login';
+btn.disabled = false;
+});
+}
+// Check if already logged in
+try {
+if(localStorage.getItem('dubuhub_admin_session') === '1' || sessionStorage.getItem('dubuhub_admin_session') === '1') {
+window.location.href = '/admin-panel';
+}
+} catch(e) {}
+</script>
+</body>
+</html>
