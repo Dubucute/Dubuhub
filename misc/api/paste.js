@@ -98,10 +98,13 @@ export default async function handler(req, res) {
           const ttl = Math.ceil((expiresAt - Date.now()) / 1000);
           if (ttl > 0) await client.expire(id, ttl);
         }
-        // Add to index list
-        await client.sadd('pastes:index', id);
-        // Store creation time for sorting
-        await client.zadd('pastes:bytime', { score: pasteData.createdAt, member: id });
+        // Add to index list (simple JSON array, works with raw redis npm pkg)
+        const indexRaw = await client.get('pastes:list');
+        const index = indexRaw ? JSON.parse(indexRaw) : [];
+        if (!index.includes(id)) {
+          index.push(id);
+          await client.set('pastes:list', JSON.stringify(index));
+        }
       } catch {}
     }
 
@@ -131,14 +134,18 @@ export default async function handler(req, res) {
 
       if (isUsingKV) {
         try {
-          // Get total count
-          const total = await client.zcard('pastes:bytime');
-          // Get IDs sorted by creation time (newest first)
-          const start = (page - 1) * limit;
-          const end = start + limit - 1;
-          const ids = await client.zrange('pastes:bytime', -end - 1, -start, { rev: true });
+          // Get paste list from Redis (simple JSON array)
+          const indexRaw = await client.get('pastes:list');
+          const allIds = indexRaw ? JSON.parse(indexRaw) : [];
+          // Reverse so newest first
+          const ids = allIds.reverse();
+          const total = ids.length;
 
-          for (const pid of ids) {
+          const start = (page - 1) * limit;
+          const end = start + limit;
+          const pageIds = ids.slice(start, end);
+
+          for (const pid of pageIds) {
             try {
               const raw = await client.get(pid);
               if (raw) {
@@ -229,7 +236,7 @@ export default async function handler(req, res) {
     if (pasteData && pasteData.expiresAt && Date.now() > pasteData.expiresAt) {
       store.delete(id);
       if (isUsingKV) {
-        try { await client.del(id); await client.srem('pastes:index', id); await client.zrem('pastes:bytime', id); } catch {}
+        try { await client.del(id); await removeFromIndex(client, id); } catch {}
       }
       pasteData = null;
     }
@@ -276,8 +283,7 @@ export default async function handler(req, res) {
     if (isUsingKV) {
       try {
         await client.del(id);
-        await client.srem('pastes:index', id);
-        await client.zrem('pastes:bytime', id);
+        await removeFromIndex(client, id);
       } catch {}
     }
 
@@ -338,8 +344,6 @@ export default async function handler(req, res) {
         if (pasteData.expiresAt) {
           const ttl = Math.ceil((pasteData.expiresAt - Date.now()) / 1000);
           if (ttl > 0) await client.expire(id, ttl);
-        } else {
-          await client.persist(id); // Remove TTL
         }
       } catch {}
     }
@@ -363,6 +367,15 @@ function generateId() {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;
+}
+
+async function removeFromIndex(client, id) {
+  try {
+    const indexRaw = await client.get('pastes:list');
+    const index = indexRaw ? JSON.parse(indexRaw) : [];
+    const filtered = index.filter(i => i !== id);
+    await client.set('pastes:list', JSON.stringify(filtered));
+  } catch {}
 }
 
 function getBlockPage(id) {
