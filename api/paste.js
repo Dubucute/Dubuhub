@@ -165,20 +165,23 @@ export default async function handler(req, res) {
           const indexRaw = await client.get('pastes:list');
           let allIds = indexRaw ? JSON.parse(indexRaw) : [];
 
-          // Fallback: if index is empty, scan Redis for existing paste keys
-          if (allIds.length === 0) {
-            try {
-              // Use SCAN instead of KEYS (KEYS is often disabled)
-              let cursor = 0;
-              do {
-                const result = await client.scan(cursor, { MATCH: '*', COUNT: 100 });
-                cursor = result.cursor;
-                for (const k of result.keys) {
-                  if (k !== 'pastes:list' && !allIds.includes(k)) allIds.push(k);
-                }
-              } while (cursor !== 0);
-            } catch {}
-          }
+          // Always scan to find any missing pastes (index update may have quietly failed)
+          try {
+            let cursor = 0;
+            const scanned = [];
+            do {
+              const result = await client.scan(cursor, { MATCH: '*', COUNT: 100 });
+              cursor = result.cursor;
+              for (const k of result.keys) {
+                if (k !== 'pastes:list' && !allIds.includes(k)) scanned.push(k);
+              }
+            } while (cursor !== 0);
+            // Merge scanned IDs into index and save back
+            if (scanned.length > 0) {
+              allIds = allIds.concat(scanned);
+              await client.set('pastes:list', JSON.stringify(allIds));
+            }
+          } catch {}
 
           // Newest first (reverse)
           const ids = allIds.reverse();
