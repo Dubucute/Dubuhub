@@ -124,6 +124,33 @@ export default async function handler(req, res) {
 
   // ==================== GET - List or Retrieve ====================
   if (req.method === 'GET') {
+    // --- DEBUG: diagnostic endpoint ---
+    if (req.query.diag === 'true') {
+      const diag = { isUsingKV, redisUrl: process.env.STORAGE_REDIS_URL ? 'SET' : 'MISSING' };
+      if (isUsingKV) {
+        try {
+          const idx = await client.get('pastes:list');
+          diag.indexRaw = idx ? 'exists (' + idx.length + ' chars)' : 'EMPTY';
+          diag.indexParsed = idx ? JSON.parse(idx) : [];
+          // Try SCAN
+          let cursor = 0, scannedKeys = [];
+          do {
+            const r = await client.scan(cursor, { MATCH: '*', COUNT: 50 });
+            cursor = r.cursor;
+            scannedKeys = scannedKeys.concat(r.keys);
+          } while (cursor !== 0);
+          diag.scanCount = scannedKeys.length;
+          diag.scanKeys = scannedKeys.filter(k => k !== 'pastes:list');
+          // Try to read first paste
+          if (diag.scanKeys.length > 0) {
+            const raw = await client.get(diag.scanKeys[0]);
+            diag.firstPasteRaw = raw ? raw.substring(0, 200) : 'NULL';
+          }
+        } catch(e) { diag.error = e.message; }
+      }
+      return res.status(200).json(diag);
+    }
+
     // --- LIST all pastes ---
     if (req.query.list === '' || req.query.list === 'true') {
       const page = parseInt(req.query.page) || 1;
