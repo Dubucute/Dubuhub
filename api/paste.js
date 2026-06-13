@@ -141,8 +141,15 @@ export default async function handler(req, res) {
           // Fallback: if index is empty, scan Redis for existing paste keys
           if (allIds.length === 0) {
             try {
-              const allKeys = await client.keys('*');
-              allIds = allKeys.filter(k => k !== 'pastes:list');
+              // Use SCAN instead of KEYS (KEYS is often disabled)
+              let cursor = 0;
+              do {
+                const result = await client.scan(cursor, { MATCH: '*', COUNT: 100 });
+                cursor = result.cursor;
+                for (const k of result.keys) {
+                  if (k !== 'pastes:list' && !allIds.includes(k)) allIds.push(k);
+                }
+              } while (cursor !== 0);
             } catch {}
           }
 
