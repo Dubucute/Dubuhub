@@ -31,7 +31,7 @@ if (!ctype_digit($placeId)) {
 }
 
 // DeepSeek API key
-$DEEPSEEK_KEY = 'sk-ec8ae5dda82043858525ae9f6216798f';
+$DEEPSEEK_KEY = 'sk-a098635ac7fb493b8bd3afed2626dbd7';
 
 // --- Helper ---
 function fetchUrl($url) {
